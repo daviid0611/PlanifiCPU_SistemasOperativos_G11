@@ -1,11 +1,15 @@
 """Pruebas del motor de planificacion con ejercicios de resultado conocido.
 
-Ejecutar:  python -m unittest discover -s tests -v
+Ejecutar desde la raiz del repositorio:  python -m unittest discover -s pruebas -v
 """
 
+import sys
 import tempfile
 import unittest
 from pathlib import Path
+
+# el codigo fuente vive en src/codigo_fuente
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src" / "codigo_fuente"))
 
 from planificpu import csv_io
 from planificpu.algoritmos import comparar, simular
