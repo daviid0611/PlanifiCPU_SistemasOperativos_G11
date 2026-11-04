@@ -2,7 +2,7 @@
 
 **Simulador de algoritmos de planificación de procesos en la CPU**
 
-Universidad Manuela Beltrán · Sistemas Operativos · Grupo G11 · 2026
+Universidad Manuela Beltrán · Sistemas Operativos · Grupo G11 · 2026<br>
 Estructura del proyecto, documentación técnica y creación del repositorio (ABP)
 
 ![Diagrama de Gantt de Round Robin en PlanifiCPU](recursos/imagenes/03_gantt_round_robin.png)
@@ -265,7 +265,8 @@ El historial sigue **Conventional Commits** (`tipo(ámbito): descripción`) y re
 | 10 | [`53d48d6`](https://github.com/daviid0611/PlanifiCPU_SistemasOperativos_G11/commit/53d48d6) | refactor | Estructura de carpetas de la guía (`src/`, `pruebas/`, `recursos/`, `documentacion/`) y licencia MIT. |
 | 11 | [`6769e16`](https://github.com/daviid0611/PlanifiCPU_SistemasOperativos_G11/commit/6769e16) | docs | Diagramas de estructura, arquitectura, archivos, modelo relacional y conceptos de S.O. |
 | 12 | [`286ce53`](https://github.com/daviid0611/PlanifiCPU_SistemasOperativos_G11/commit/286ce53) | docs | Documentos PDF de la carpeta `documentacion/`. |
-| 13 | último commit | docs | README completo según la guía. |
+| 13 | [`76865e6`](https://github.com/daviid0611/PlanifiCPU_SistemasOperativos_G11/commit/76865e6) | docs | README completo según la guía. |
+| 14 | último commit | chore | `.gitattributes` para que GitHub no cuente los HTML de diagramas como código; ajuste del encabezado del README. |
 
 Historial completo: [commits/main](https://github.com/daviid0611/PlanifiCPU_SistemasOperativos_G11/commits/main)
 
