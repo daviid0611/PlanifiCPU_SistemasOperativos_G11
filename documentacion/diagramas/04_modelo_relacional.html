@@ -1,0 +1,57 @@
+<!doctype html><html lang='es'><head><meta charset='utf-8'><style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', Arial, sans-serif; color: #1b2a4a; background: #fff; padding: 28px; }
+h1 { font-size: 22px; color: #9b1027; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #5a6475; margin-bottom: 20px; }
+.caja { border: 2px solid #9b1027; border-radius: 10px; padding: 10px 12px; background: #fff; }
+.caja h3 { font-size: 15px; margin-bottom: 4px; }
+.caja p, .caja li { font-size: 12.5px; color: #3a4558; line-height: 1.45; }
+.caja ul { padding-left: 16px; }
+.mono { font-family: Consolas, monospace; font-size: 12px; color: #9b1027; }
+.flecha { text-align: center; color: #9b1027; font-size: 22px; line-height: 1; }
+.pie { margin-top: 16px; font-size: 11.5px; color: #6b7385; }
+
+.lienzo { position: relative; height: 720px; width: 1270px; }
+.lienzo > div { position: absolute; z-index: 2; }
+.lienzo svg { position: absolute; left: 0; top: 0; z-index: 1; }
+.tb { width: 320px; border: 2px solid #9b1027; border-radius: 8px; overflow: hidden; background: #fff; }
+.th { background: #9b1027; color: #fff; font-weight: 700; height: 32px; line-height: 32px; padding: 0 10px; font-size: 14px; }
+table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+td { height: 25px; padding: 0 8px; }
+tr:nth-child(even) td { background: #fbf3f5; }
+td.k { width: 58px; color: #9b1027; font-weight: 700; font-size: 11px; }
+td.t { color: #6b7385; text-align: right; font-family: Consolas, monospace; font-size: 11.5px; }
+</style></head><body>
+<h1>Modelo relacional de la base de datos</h1>
+<div class="sub">SQLite 3 · archivo <span class="mono">bd/planificpu.db</span> · 3FN · PK = llave primaria, FK = llave foránea, UK = única.</div>
+<div class="lienzo">
+ <div style="left:0;top:0"><div class='tb'><div class='th'>ALGORITMO</div><table><tr><td class='k'>PK</td><td>id_algoritmo</td><td class='t'>INTEGER</td></tr><tr><td class='k'>UK</td><td>nombre</td><td class='t'>TEXT</td></tr><tr><td class='k'></td><td>permite_expropiacion</td><td class='t'>INTEGER</td></tr><tr><td class='k'></td><td>usa_quantum</td><td class='t'>INTEGER</td></tr></table></div></div>
+ <div style="left:0;top:250px"><div class='tb'><div class='th'>ESCENARIO</div><table><tr><td class='k'>PK</td><td>id_escenario</td><td class='t'>INTEGER</td></tr><tr><td class='k'></td><td>nombre</td><td class='t'>TEXT</td></tr><tr><td class='k'></td><td>fecha_creacion</td><td class='t'>TEXT</td></tr></table></div></div>
+ <div style="left:440px;top:0"><div class='tb'><div class='th'>SIMULACION</div><table><tr><td class='k'>PK</td><td>id_simulacion</td><td class='t'>INTEGER</td></tr><tr><td class='k'>FK</td><td>id_algoritmo</td><td class='t'>INTEGER</td></tr><tr><td class='k'>FK</td><td>id_escenario</td><td class='t'>INTEGER</td></tr><tr><td class='k'></td><td>quantum</td><td class='t'>INTEGER</td></tr><tr><td class='k'></td><td>expropiativo</td><td class='t'>INTEGER</td></tr><tr><td class='k'></td><td>fecha</td><td class='t'>TEXT</td></tr><tr><td class='k'></td><td>espera_promedio</td><td class='t'>REAL</td></tr><tr><td class='k'></td><td>retorno_promedio</td><td class='t'>REAL</td></tr><tr><td class='k'></td><td>respuesta_promedio</td><td class='t'>REAL</td></tr><tr><td class='k'></td><td>cambios_contexto</td><td class='t'>INTEGER</td></tr></table></div></div>
+ <div style="left:440px;top:430px"><div class='tb'><div class='th'>PROCESO</div><table><tr><td class='k'>PK</td><td>id_proceso</td><td class='t'>INTEGER</td></tr><tr><td class='k'>FK</td><td>id_escenario</td><td class='t'>INTEGER</td></tr><tr><td class='k'></td><td>pid</td><td class='t'>TEXT</td></tr><tr><td class='k'></td><td>llegada</td><td class='t'>INTEGER</td></tr><tr><td class='k'></td><td>rafaga</td><td class='t'>INTEGER</td></tr><tr><td class='k'></td><td>prioridad</td><td class='t'>INTEGER</td></tr><tr><td class='k'></td><td>orden</td><td class='t'>INTEGER</td></tr></table></div></div>
+ <div style="left:900px;top:0"><div class='tb'><div class='th'>SEGMENTO_GANTT</div><table><tr><td class='k'>PK FK</td><td>id_simulacion</td><td class='t'>INTEGER</td></tr><tr><td class='k'>PK</td><td>orden</td><td class='t'>INTEGER</td></tr><tr><td class='k'>FK</td><td>id_proceso</td><td class='t'>INTEGER</td></tr><tr><td class='k'></td><td>inicio</td><td class='t'>INTEGER</td></tr><tr><td class='k'></td><td>fin</td><td class='t'>INTEGER</td></tr></table></div></div>
+ <div style="left:900px;top:455px"><div class='tb'><div class='th'>RESULTADO_PROCESO</div><table><tr><td class='k'>PK FK</td><td>id_simulacion</td><td class='t'>INTEGER</td></tr><tr><td class='k'>PK FK</td><td>id_proceso</td><td class='t'>INTEGER</td></tr><tr><td class='k'></td><td>inicio</td><td class='t'>INTEGER</td></tr><tr><td class='k'></td><td>fin</td><td class='t'>INTEGER</td></tr><tr><td class='k'></td><td>espera</td><td class='t'>INTEGER</td></tr><tr><td class='k'></td><td>retorno</td><td class='t'>INTEGER</td></tr><tr><td class='k'></td><td>respuesta</td><td class='t'>INTEGER</td></tr></table></div></div>
+ <svg width="1270" height="720">
+  <defs><marker id="m" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L10,6 L0,12" fill="none" stroke="#9b1027" stroke-width="1.6"/></marker></defs>
+  <g stroke="#9b1027" stroke-width="2" fill="none" marker-end="url(#m)">
+   <path d="M320,72 L438,72"/>
+   <path d="M320,297 L390,297 L390,97 L438,97"/>
+   <path d="M320,330 L390,330 L390,502 L438,502"/>
+   <path d="M760,47 L898,47"/>
+   <path d="M760,56 L870,56 L870,502 L898,502"/>
+   <path d="M760,477 L850,477 L850,527 L898,527"/>
+   <path d="M600,643 L600,700 L1250,700 L1250,97 L1222,97"/>
+  </g>
+  <g font-size="12.5" fill="#1b2a4a" font-family="Segoe UI" font-weight="600">
+   <text x="340" y="64">1 : N</text>
+   <text x="330" y="289">1 : N</text>
+   <text x="330" y="322">1 : N</text>
+   <text x="800" y="40">1 : N</text>
+   <text x="878" y="300">1 : N</text>
+   <text x="770" y="470">1 : N</text>
+   <text x="880" y="693">0..1 : N (NULL = CPU ociosa)</text>
+  </g>
+ </svg>
+</div>
+<div class="pie">SIMULACION y PROCESO tienen una relación N:M que se resuelve con RESULTADO_PROCESO. Al borrar un escenario se borran en cascada sus procesos, simulaciones, resultados y tramos del Gantt.</div>
+</body></html>

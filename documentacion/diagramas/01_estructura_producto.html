@@ -1,0 +1,40 @@
+<!doctype html><html lang='es'><head><meta charset='utf-8'><style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', Arial, sans-serif; color: #1b2a4a; background: #fff; padding: 28px; }
+h1 { font-size: 22px; color: #9b1027; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #5a6475; margin-bottom: 20px; }
+.caja { border: 2px solid #9b1027; border-radius: 10px; padding: 10px 12px; background: #fff; }
+.caja h3 { font-size: 15px; margin-bottom: 4px; }
+.caja p, .caja li { font-size: 12.5px; color: #3a4558; line-height: 1.45; }
+.caja ul { padding-left: 16px; }
+.mono { font-family: Consolas, monospace; font-size: 12px; color: #9b1027; }
+.flecha { text-align: center; color: #9b1027; font-size: 22px; line-height: 1; }
+.pie { margin-top: 16px; font-size: 11.5px; color: #6b7385; }
+
+.raiz { margin: 0 auto; width: 420px; text-align: center; background: #9b1027; color: #fff; border-radius: 12px; padding: 12px; font-size: 22px; font-weight: 700; }
+.raiz span { display: block; font-size: 13px; font-weight: 400; color: #f3d6dc; }
+.ramas { height: 36px; margin: 0 118px; border: 2px solid #9b1027; border-bottom: none; border-radius: 10px 10px 0 0; position: relative; top: 18px; }
+.ramas::before { content: ''; position: absolute; left: 50%; top: -20px; height: 20px; border-left: 2px solid #9b1027; }
+.fila { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-top: 18px; }
+.m { position: relative; }
+.m::before { content: ''; position: absolute; left: 50%; top: -20px; height: 18px; border-left: 2px solid #9b1027; }
+.n { position: absolute; right: 10px; top: 8px; background: #9b1027; color: #fff; width: 24px; height: 24px; border-radius: 50%; text-align: center; font-size: 13px; line-height: 24px; font-weight: 700; }
+</style></head><body>
+<h1>Diagrama de estructura del producto</h1>
+<div class="sub">PlanifiCPU se organiza en cuatro módulos funcionales y un módulo de persistencia. Cada módulo agrupa las funcionalidades que ofrece al usuario.</div>
+<div class="raiz">PlanifiCPU<span>Simulador de planificación de procesos en la CPU</span></div>
+<div class="ramas"></div>
+<div class="fila">
+  <div class="caja m"><div class="n">1</div><h3>Interfaz gráfica</h3><p class="mono">gui.py</p><ul>
+    <li>Formulario de procesos</li><li>Selección de algoritmo y quantum</li><li>Pestañas: Gantt, Métricas, Comparación, Historial</li><li>Mensajes de validación</li></ul></div>
+  <div class="caja m"><div class="n">2</div><h3>Gestor de procesos</h3><p class="mono">modelos.py · csv_io.py</p><ul>
+    <li>Registrar, editar y eliminar procesos</li><li>Validar PID, llegada, ráfaga y prioridad</li><li>Cargar escenarios desde CSV</li></ul></div>
+  <div class="caja m"><div class="n">3</div><h3>Motor de planificación</h3><p class="mono">algoritmos.py</p><ul>
+    <li>FCFS</li><li>SJF y SRTF (expropiativo)</li><li>Round Robin (quantum)</li><li>Prioridad (con y sin expropiación)</li><li>Cola de listos y reloj de CPU</li></ul></div>
+  <div class="caja m"><div class="n">4</div><h3>Métricas y reportes</h3><p class="mono">metricas.py · csv_io.py</p><ul>
+    <li>Espera, retorno y respuesta</li><li>Promedios y cambios de contexto</li><li>Comparación de algoritmos</li><li>Exportar CSV y Gantt PNG</li></ul></div>
+  <div class="caja m"><div class="n">5</div><h3>Persistencia</h3><p class="mono">bd.py · schema.sql</p><ul>
+    <li>Guardar y abrir escenarios</li><li>Historial de simulaciones</li><li>Base de datos SQLite local</li></ul></div>
+</div>
+<div class="pie">Usuarios: estudiante y docente de Sistemas Operativos · Ejecución: aplicación de escritorio Python en Windows 10/11.</div>
+</body></html>

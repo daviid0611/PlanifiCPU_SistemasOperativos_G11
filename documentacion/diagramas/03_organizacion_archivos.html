@@ -1,0 +1,56 @@
+<!doctype html><html lang='es'><head><meta charset='utf-8'><style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', Arial, sans-serif; color: #1b2a4a; background: #fff; padding: 28px; }
+h1 { font-size: 22px; color: #9b1027; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #5a6475; margin-bottom: 20px; }
+.caja { border: 2px solid #9b1027; border-radius: 10px; padding: 10px 12px; background: #fff; }
+.caja h3 { font-size: 15px; margin-bottom: 4px; }
+.caja p, .caja li { font-size: 12.5px; color: #3a4558; line-height: 1.45; }
+.caja ul { padding-left: 16px; }
+.mono { font-family: Consolas, monospace; font-size: 12px; color: #9b1027; }
+.flecha { text-align: center; color: #9b1027; font-size: 22px; line-height: 1; }
+.pie { margin-top: 16px; font-size: 11.5px; color: #6b7385; }
+
+.dos { display: grid; grid-template-columns: 1.1fr 1fr; gap: 24px; }
+.arbol { font-family: Consolas, monospace; font-size: 14px; line-height: 1.45; background: #f4f6fa; border-radius: 10px; padding: 14px 18px; }
+.arbol b { color: #9b1027; }
+.leyenda { display: flex; flex-direction: column; gap: 10px; }
+</style></head><body>
+<h1>Organización de archivos y directorios</h1>
+<div class="sub">Estructura del repositorio PlanifiCPU_SistemasOperativos_G11 (basada en la estructura sugerida por la guía).</div>
+<div class="dos">
+<pre class="arbol"><b>PlanifiCPU_SistemasOperativos_G11/</b>
+├── README.md
+├── LICENSE
+├── requirements.txt
+├── <b>documentacion/</b>
+│   ├── descripcion_proyecto.pdf
+│   ├── requerimientos.pdf
+│   ├── arquitectura_inicial.pdf
+│   ├── tecnologias_y_referencias.pdf
+│   └── <b>diagramas/</b>
+├── <b>src/</b>
+│   └── <b>codigo_fuente/</b>
+│       ├── main.py
+│       ├── <b>planificpu/</b>
+│       │   ├── gui.py
+│       │   ├── algoritmos.py
+│       │   ├── metricas.py
+│       │   ├── modelos.py
+│       │   ├── csv_io.py
+│       │   └── bd.py
+│       └── <b>bd/</b>
+│           └── schema.sql
+├── <b>recursos/</b>
+│   ├── <b>imagenes/</b>
+│   └── <b>datos_ejemplo/</b>
+└── <b>pruebas/</b>
+    └── test_algoritmos.py</pre>
+<div class="leyenda">
+ <div class="caja"><h3>documentacion/</h3><p>Documentos PDF del proyecto y diagramas (PNG y su fuente HTML).</p></div>
+ <div class="caja"><h3>src/codigo_fuente/</h3><p>Aplicación: punto de entrada <span class="mono">main.py</span>, paquete <span class="mono">planificpu</span> con los módulos y el esquema de la base de datos.</p></div>
+ <div class="caja"><h3>recursos/</h3><p>Capturas de la interfaz y escenarios CSV de ejemplo.</p></div>
+ <div class="caja"><h3>pruebas/</h3><p>Pruebas automáticas del motor (unittest).</p></div>
+ <div class="caja"><h3>Raíz</h3><p>README (presentación), licencia MIT y dependencias.</p></div>
+</div></div>
+</body></html>
