@@ -1,0 +1,32 @@
+test_cpu_ociosa (test_algoritmos.TestFCFS.test_cpu_ociosa) ... ok
+test_ejemplo_ficha_tecnica (test_algoritmos.TestFCFS.test_ejemplo_ficha_tecnica) ... ok
+test_expropiativa (test_algoritmos.TestPrioridad.test_expropiativa) ... ok
+test_no_expropiativa (test_algoritmos.TestPrioridad.test_no_expropiativa) ... ok
+test_llegadas_entran_antes_que_el_expropiado (test_algoritmos.TestRoundRobin.test_llegadas_entran_antes_que_el_expropiado) ... ok
+test_quantum_4 (test_algoritmos.TestRoundRobin.test_quantum_4) ... ok
+test_quantum_invalido (test_algoritmos.TestRoundRobin.test_quantum_invalido) ... ok
+test_expropiativo_srtf (test_algoritmos.TestSJF.test_expropiativo_srtf) ... ok
+test_no_expropiativo (test_algoritmos.TestSJF.test_no_expropiativo) ... ok
+test_bd_guarda_escenario_y_simulacion (test_algoritmos.TestValidacionYArchivos.test_bd_guarda_escenario_y_simulacion) ... ok
+test_csv_ida_y_vuelta (test_algoritmos.TestValidacionYArchivos.test_csv_ida_y_vuelta) ... ok
+test_pid_repetido (test_algoritmos.TestValidacionYArchivos.test_pid_repetido) ... ok
+test_rafaga_cero (test_algoritmos.TestValidacionYArchivos.test_rafaga_cero) ... ok
+test_cpu_ociosa_y_proceso_nuevo (test_paso_a_paso.TestCasosLimite.test_cpu_ociosa_y_proceso_nuevo) ... ok
+test_quantum_mayor_que_todas_las_rafagas_equivale_a_fcfs (test_paso_a_paso.TestCasosLimite.test_quantum_mayor_que_todas_las_rafagas_equivale_a_fcfs) ... ok
+test_todos_llegan_al_mismo_tiempo (test_paso_a_paso.TestCasosLimite.test_todos_llegan_al_mismo_tiempo) ... ok
+test_escenarios_aleatorios (test_paso_a_paso.TestCoherenciaConElMotor.test_escenarios_aleatorios) ... ok
+test_cola_de_listos (test_paso_a_paso.TestEjemploFicha.test_cola_de_listos) ... ok
+test_estados_y_restante (test_paso_a_paso.TestEjemploFicha.test_estados_y_restante) ... ok
+test_eventos_en_t5 (test_paso_a_paso.TestEjemploFicha.test_eventos_en_t5) ... ok
+test_instante_final (test_paso_a_paso.TestEjemploFicha.test_instante_final) ... ok
+test_un_instante_por_unidad_mas_el_final (test_paso_a_paso.TestEjemploFicha.test_un_instante_por_unidad_mas_el_final) ... ok
+test_prioridad_ordena_por_numero_menor (test_paso_a_paso.TestOrdenDeLaCola.test_prioridad_ordena_por_numero_menor) ... ok
+test_round_robin_llegadas_antes_que_el_expropiado (test_paso_a_paso.TestOrdenDeLaCola.test_round_robin_llegadas_antes_que_el_expropiado) ... ok
+test_round_robin_quantum_agotado_con_cola_vacia (test_paso_a_paso.TestOrdenDeLaCola.test_round_robin_quantum_agotado_con_cola_vacia) ... ok
+test_sjf_ordena_por_rafaga (test_paso_a_paso.TestOrdenDeLaCola.test_sjf_ordena_por_rafaga) ... ok
+test_srtf_registra_la_expropiacion (test_paso_a_paso.TestOrdenDeLaCola.test_srtf_registra_la_expropiacion) ... ok
+
+----------------------------------------------------------------------
+Ran 27 tests in 0.173s
+
+OK
