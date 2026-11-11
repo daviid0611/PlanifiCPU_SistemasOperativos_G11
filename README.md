@@ -3,9 +3,9 @@
 **Simulador de algoritmos de planificación de procesos en la CPU**
 
 Universidad Manuela Beltrán · Sistemas Operativos · Grupo G11 · 2026<br>
-Estructura del proyecto, documentación técnica y creación del repositorio (ABP)
+Fase II: avance funcional, pruebas y evidencias (ABP) · versión 1.1
 
-![Diagrama de Gantt de Round Robin en PlanifiCPU](recursos/imagenes/03_gantt_round_robin.png)
+![Modo paso a paso de PlanifiCPU con Round Robin](recursos/imagenes/08_paso_a_paso.gif)
 
 ## Contenido
 
@@ -28,7 +28,8 @@ Estructura del proyecto, documentación técnica y creación del repositorio (AB
 10. [Requisitos iniciales de ejecución](#10-requisitos-iniciales-de-ejecución)
 11. [Integrantes del equipo](#11-integrantes-del-equipo)
 12. [Estado actual y próximos avances](#12-estado-actual-y-próximos-avances)
-13. [Documentación técnica y referencias](#13-documentación-técnica-y-referencias)
+13. [Fase II: avance realizado](#13-fase-ii-avance-realizado)
+14. [Documentación técnica y referencias](#14-documentación-técnica-y-referencias)
 
 ---
 
@@ -38,7 +39,7 @@ Estructura del proyecto, documentación técnica y creación del repositorio (AB
 
 ## 2. Descripción general
 
-PlanifiCPU es una aplicación de escritorio desarrollada en Python que simula los algoritmos de planificación de CPU **FCFS, SJF (con y sin expropiación), Round Robin y por Prioridad (con y sin expropiación)**. A partir de una lista de procesos con su tiempo de llegada, ráfaga de CPU y prioridad, genera el **diagrama de Gantt** de la ejecución, registra cada **cambio de contexto**, calcula los tiempos de **espera, retorno y respuesta**, y **compara** el desempeño de los cuatro algoritmos con el mismo conjunto de procesos. Los escenarios y el historial de simulaciones se guardan en una base de datos SQLite local.
+PlanifiCPU es una aplicación de escritorio desarrollada en Python que simula los algoritmos de planificación de CPU **FCFS, SJF (con y sin expropiación), Round Robin y por Prioridad (con y sin expropiación)**. A partir de una lista de procesos con su tiempo de llegada, ráfaga de CPU y prioridad, genera el **diagrama de Gantt** de la ejecución, permite recorrerla **paso a paso** viendo la CPU y la cola de listos en cada instante, registra cada **cambio de contexto**, calcula los tiempos de **espera, retorno y respuesta**, y **compara** el desempeño de los cuatro algoritmos con el mismo conjunto de procesos. Los escenarios y el historial de simulaciones se guardan en una base de datos SQLite local.
 
 ## 3. Levantamiento de información
 
@@ -146,6 +147,7 @@ PlanifiCPU es una aplicación de escritorio desarrollada en Python que simula lo
 | 5 | Comparar algoritmos | Los 4 algoritmos con el mismo conjunto de procesos, en tabla y gráfica. |
 | 6 | Cargar y exportar | Escenarios en CSV, resultados en CSV y el Gantt en PNG. |
 | 7 | Historial | Escenarios y simulaciones guardados en SQLite, con opción de reabrirlos. |
+| 8 | Paso a paso (Fase II) | Recorre la simulación unidad por unidad: proceso en CPU, cola de listos, estados, ráfaga restante y bitácora de eventos. |
 
 ### Relación con los conceptos de Sistemas Operativos
 
@@ -170,6 +172,7 @@ PlanifiCPU es una aplicación de escritorio desarrollada en Python que simula lo
 | Interfaz gráfica | `gui.py` | Formularios, tablas, pestañas de resultados y diálogos de archivo (Tkinter + Matplotlib). |
 | Gestor de procesos | `modelos.py`, `csv_io.py` | Crea y valida los procesos; carga escenarios desde CSV. |
 | Motor de planificación | `algoritmos.py` | Un algoritmo por función con una interfaz común: `simular(procesos, algoritmo, quantum, expropiativo)`. |
+| Traza paso a paso (Fase II) | `paso_a_paso.py` | Expande el Gantt en instantes con CPU, cola de listos, estados y eventos: `trazar(procesos, resultado)`. |
 | Métricas y reportes | `metricas.py`, `csv_io.py` | Cálculo de tiempos, comparación y exportación a CSV/PNG. |
 | Persistencia | `bd.py`, `bd/schema.sql` | Guarda escenarios, simulaciones, resultados y tramos del Gantt en SQLite. |
 
@@ -188,6 +191,8 @@ flowchart LR
     M --> V[Validación<br/>modelos.py]
     M --> R[Métricas<br/>metricas.py]
     M -->|Resultado: Gantt + métricas| G
+    G -->|Resultado| P[Paso a paso<br/>paso_a_paso.py]
+    P -->|instantes| G
     G --> C[Archivos<br/>csv_io.py]
     G --> B[Acceso a datos<br/>bd.py]
     C --> F[(CSV / PNG)]
@@ -206,32 +211,38 @@ PlanifiCPU_SistemasOperativos_G11/
 │   ├── requerimientos.pdf          # requerimientos funcionales y no funcionales
 │   ├── arquitectura_inicial.pdf    # componentes, arquitectura, archivos y BD
 │   ├── tecnologias_y_referencias.pdf
-│   └── diagramas/                  # diagramas en PNG y su fuente HTML
+│   ├── diagramas/                  # diagramas en PNG y su fuente HTML
+│   └── fase2/                      # componente paso a paso, pruebas y su salida
 ├── src/
 │   └── codigo_fuente/
 │       ├── main.py                 # punto de entrada
-│       ├── planificpu/             # gui, algoritmos, metricas, modelos, csv_io, bd
+│       ├── planificpu/             # gui, algoritmos, paso_a_paso, metricas, modelos, csv_io, bd
 │       └── bd/schema.sql           # esquema de la base de datos
 ├── recursos/
 │   ├── imagenes/                   # capturas de la interfaz
 │   └── datos_ejemplo/              # escenarios CSV de ejemplo
 └── pruebas/
-    └── test_algoritmos.py          # pruebas automáticas del motor
+    ├── test_algoritmos.py          # pruebas automáticas del motor (Fase I)
+    └── test_paso_a_paso.py         # pruebas del modo paso a paso (Fase II)
 ```
 
 ### 8.4 Frontend
 
-Interfaz de escritorio con **Tkinter** (widgets `ttk`) y gráficas de **Matplotlib** incrustadas, con los colores institucionales. Se abre maximizada y tiene un panel izquierdo de trabajo y un panel derecho de resultados con cuatro pestañas.
+Interfaz de escritorio con **Tkinter** (widgets `ttk`) y gráficas de **Matplotlib** incrustadas, con los colores institucionales. Se abre maximizada y tiene un panel izquierdo de trabajo y un panel derecho de resultados con cinco pestañas.
 
 | Sección | Controles |
 |---|---|
 | 1. Registrar procesos | Campos PID, Llegada, Ráfaga y Prioridad; *Agregar / actualizar*; tabla de procesos (al seleccionar una fila se carga para editarla); *Eliminar*, *Limpiar todo*, *Cargar ejemplo*. |
-| 2. Elegir algoritmo | Lista con los 4 algoritmos, quantum (solo Round Robin), *Modo expropiativo* (solo SJF y Prioridad), *Simular* y *Comparar los 4 algoritmos*. |
+| 2. Elegir algoritmo | Lista con los 4 algoritmos, quantum (solo Round Robin), *Modo expropiativo* (solo SJF y Prioridad), *Simular*, *Paso a paso* y *Comparar los 4 algoritmos*. |
 | 3. Escenarios y reportes | *Cargar CSV*, *Guardar CSV*, *Guardar en BD*, *Abrir de BD*, *Exportar resultados* y *Exportar Gantt PNG*. |
 
 **Diagrama de Gantt** con el registro de ejecución (quién toma la CPU, cambios de contexto, expropiaciones y fin de cada proceso). Ejemplo de la ficha técnica con FCFS:
 
 ![Gantt FCFS](recursos/imagenes/01_gantt_fcfs.png)
+
+**Paso a paso** (Fase II): controles para avanzar, retroceder o reproducir; proceso en CPU y cola de listos; Gantt que se construye unidad por unidad; estado de cada proceso y bitácora de eventos. Round Robin q=3 en t=7:
+
+![Paso a paso con Round Robin](recursos/imagenes/06_paso_a_paso_round_robin.png)
 
 **Métricas** por proceso con la fila de promedios (FCFS: espera promedio 3,33 y retorno promedio 7,33):
 
@@ -266,7 +277,13 @@ El historial sigue **Conventional Commits** (`tipo(ámbito): descripción`) y re
 | 11 | [`6769e16`](https://github.com/daviid0611/PlanifiCPU_SistemasOperativos_G11/commit/6769e16) | docs | Diagramas de estructura, arquitectura, archivos, modelo relacional y conceptos de S.O. |
 | 12 | [`286ce53`](https://github.com/daviid0611/PlanifiCPU_SistemasOperativos_G11/commit/286ce53) | docs | Documentos PDF de la carpeta `documentacion/`. |
 | 13 | [`76865e6`](https://github.com/daviid0611/PlanifiCPU_SistemasOperativos_G11/commit/76865e6) | docs | README completo según la guía. |
-| 14 | último commit | chore | `.gitattributes` para que GitHub no cuente los HTML de diagramas como código; ajuste del encabezado del README. |
+| 14 | [`09f7f5e`](https://github.com/daviid0611/PlanifiCPU_SistemasOperativos_G11/commit/09f7f5e) | chore | `.gitattributes` para que GitHub no cuente los HTML de diagramas como código; ajuste del encabezado del README. |
+| 15 | [`491e0f4`](https://github.com/daviid0611/PlanifiCPU_SistemasOperativos_G11/commit/491e0f4) | feat(paso-a-paso) | **Fase II.** Módulo `paso_a_paso.py`: traza instante por instante con CPU, cola de listos, estados y eventos. |
+| 16 | [`2f8faf3`](https://github.com/daviid0611/PlanifiCPU_SistemasOperativos_G11/commit/2f8faf3) | test(paso-a-paso) | **Fase II.** 14 pruebas: casos límite y 420 simulaciones aleatorias contra el motor. |
+| 17 | [`6f3bd28`](https://github.com/daviid0611/PlanifiCPU_SistemasOperativos_G11/commit/6f3bd28) | feat(gui) | **Fase II.** Pestaña *Paso a paso* con controles, reproducción, Gantt parcial y bitácora. |
+| 18 | [`0add69c`](https://github.com/daviid0611/PlanifiCPU_SistemasOperativos_G11/commit/0add69c) | docs | **Fase II.** Capturas y animación del modo paso a paso. |
+| 19 | [`a8a8221`](https://github.com/daviid0611/PlanifiCPU_SistemasOperativos_G11/commit/a8a8221) | docs(fase2) | **Fase II.** Documentación del componente y reporte de pruebas. |
+| 20 | último commit | docs | **Fase II.** README actualizado con el avance, el entorno, las pruebas y las evidencias. |
 
 Historial completo: [commits/main](https://github.com/daviid0611/PlanifiCPU_SistemasOperativos_G11/commits/main)
 
@@ -350,7 +367,7 @@ python src/codigo_fuente/main.py
 
 1. Pulse **Cargar ejemplo** o **Cargar CSV** (archivos en `recursos/datos_ejemplo/`), o registre los procesos uno a uno.
 2. Elija el algoritmo; para Round Robin indique el quantum.
-3. Pulse **Simular** para ver el Gantt y las métricas, o **Comparar los 4 algoritmos**.
+3. Pulse **Simular** para ver el Gantt y las métricas, **Paso a paso** para recorrer la ejecución instante por instante (botones o flechas del teclado), o **Comparar los 4 algoritmos**.
 4. Exporte los resultados (CSV) o el Gantt (PNG). Cada simulación queda en el **Historial (BD)**.
 
 Formato del CSV (coma o punto y coma; `prioridad` es opcional):
@@ -362,7 +379,7 @@ P2;1;3;1
 P3;2;4;3
 ```
 
-**Pruebas automáticas** (13 pruebas: ejemplo de la ficha técnica y ejercicios clásicos de Silberschatz con resultado conocido):
+**Pruebas automáticas** (27 pruebas: 13 del motor con el ejemplo de la ficha técnica y ejercicios clásicos de Silberschatz, y 14 del modo paso a paso):
 
 ```bash
 python -m unittest discover -s pruebas -v
@@ -380,17 +397,57 @@ Grupo G11 · Sistemas Operativos · Facultad de Ingeniería · Universidad Manue
 
 ## 12. Estado actual y próximos avances
 
-**Estado actual: prototipo funcional (versión 1.0).** Ya están implementados los cuatro algoritmos (con y sin expropiación), el diagrama de Gantt con registro de ejecución, las métricas, la comparación de algoritmos, la carga y exportación en CSV/PNG, la base de datos SQLite con historial y 13 pruebas automáticas del motor que pasan. Aunque la guía no exige el producto implementado en esta primera entrega, el equipo adelantó la implementación para validar la arquitectura propuesta.
+**Estado actual: versión 1.1 (Fase II).** Están implementados los cuatro algoritmos (con y sin expropiación), el diagrama de Gantt con registro de ejecución, el **modo paso a paso**, las métricas, la comparación de algoritmos, la carga y exportación en CSV/PNG y la base de datos SQLite con historial. Pasan 27 pruebas automáticas.
 
 **Próximos avances**
 
-- [ ] Modo paso a paso: avanzar la simulación unidad por unidad mostrando la cola de listos en cada instante.
-- [ ] Ampliar las pruebas con casos límite (misma llegada, CPU ociosa larga, quantum grande).
+- [x] Modo paso a paso: avanzar la simulación unidad por unidad mostrando la cola de listos en cada instante (Fase II).
+- [x] Pruebas con casos límite del modo paso a paso: misma llegada, CPU ociosa, quantum grande y 420 simulaciones aleatorias (Fase II).
 - [ ] Validar el simulador con los ejercicios propuestos por el docente en clase.
 - [ ] Manual de usuario con capturas en `documentacion/`.
 - [ ] Empaquetar la aplicación como ejecutable `.exe` para Windows (PyInstaller).
 
-## 13. Documentación técnica y referencias
+## 13. Fase II: avance realizado
+
+**Objetivo de la fase.** Pasar de mostrar solo el resultado final a mostrar **cómo decide el planificador de corto plazo** en cada instante, que es lo que en papel no se ve (problemática 3 de la sección 4).
+
+| Evidencia pedida | Dónde está |
+|---|---|
+| Avance funcional | Modo **paso a paso** en la interfaz: botón *Paso a paso* y pestaña nueva ([animación](recursos/imagenes/08_paso_a_paso.gif)). |
+| Configuración del entorno | Tabla siguiente y [sección 10](#10-requisitos-iniciales-de-ejecución). |
+| Componentes principales | [`paso_a_paso.py`](src/codigo_fuente/planificpu/paso_a_paso.py) (lógica) y la pestaña en [`gui.py`](src/codigo_fuente/planificpu/gui.py), documentados en [componente_paso_a_paso.md](documentacion/fase2/componente_paso_a_paso.md). |
+| Pruebas de funcionamiento | [`test_paso_a_paso.py`](pruebas/test_paso_a_paso.py) y el reporte [pruebas_fase2.md](documentacion/fase2/pruebas_fase2.md): 27 de 27 correctas ([salida](documentacion/fase2/salida_pruebas.txt)). |
+| Evidencias del desarrollo | Capturas [06](recursos/imagenes/06_paso_a_paso_round_robin.png) y [07](recursos/imagenes/07_paso_a_paso_srtf_expropiacion.png), animación [08](recursos/imagenes/08_paso_a_paso.gif) y commits de la fase. |
+
+**Configuración del entorno de trabajo**
+
+| Elemento | Configuración usada |
+|---|---|
+| Sistema operativo | Windows 11 de 64 bits con escalado de pantalla; `main.py` activa `SetProcessDpiAwareness(1)` para que la interfaz se vea nítida. |
+| Intérprete | Python 3.14.6 (instalador oficial, con Tkinter 8.6 y sqlite3). |
+| Dependencias | `python -m pip install -r requirements.txt` (Matplotlib 3.11.2). Opcional: entorno virtual con `python -m venv .venv` y `.venv\Scripts\activate`; la carpeta `.venv/` está en `.gitignore`. |
+| Base de datos | SQLite 3.50.4; `src/codigo_fuente/bd/planificpu.db` se crea sola desde `schema.sql` en la primera ejecución. |
+| Control de versiones | Git 2.54 y GitHub, rama `main`, mensajes con Conventional Commits. |
+
+**Qué muestra el modo paso a paso en cada instante `t`**
+
+- Proceso en la **CPU** (o CPU ociosa) y cuánto le falta.
+- **Cola de listos** en el orden en que el planificador los atenderá; en Round Robin, el orden real de la cola FIFO.
+- **Estado** de cada proceso (Nuevo, Listo, En ejecución, Terminado) y su ráfaga restante.
+- **Bitácora**: llegadas, despachos, expropiaciones, fin de quantum, cambios de contexto y terminaciones.
+- **Gantt parcial** que se construye unidad por unidad, con la unidad actual resaltada.
+
+![Expropiación en SRTF](recursos/imagenes/07_paso_a_paso_srtf_expropiacion.png)
+
+**Resultados obtenidos**
+
+- El paso a paso se calcula a partir del Gantt del motor, así que **siempre coincide** con el Gantt y las métricas de la Fase I; la prueba con 420 simulaciones aleatorias lo comprueba instante por instante.
+- El ejercicio de cinco procesos con Round Robin (q=3) se verificó a mano en t=7: CPU P3, cola P4, P1, P2 ([verificación](documentacion/fase2/pruebas_fase2.md)).
+- Las funciones de la Fase I (Simular, Comparar, CSV, BD) siguen funcionando: sus 13 pruebas pasan sin cambios.
+
+**Commits de la Fase II**: filas 15 a 20 de la [sección 8.5](#85-commits).
+
+## 14. Documentación técnica y referencias
 
 | Documento | Contenido |
 |---|---|
@@ -399,6 +456,8 @@ Grupo G11 · Sistemas Operativos · Facultad de Ingeniería · Universidad Manue
 | [arquitectura_inicial.pdf](documentacion/arquitectura_inicial.pdf) | Componentes, diagrama de estructura, arquitectura, organización de archivos y modelo relacional. |
 | [tecnologias_y_referencias.pdf](documentacion/tecnologias_y_referencias.pdf) | Relación de tecnologías y herramientas, y referencias bibliográficas. |
 | [diagramas/](documentacion/diagramas) | Diagramas en PNG con su fuente HTML. |
+| [fase2/componente_paso_a_paso.md](documentacion/fase2/componente_paso_a_paso.md) | Fase II: diseño, estructura de datos, eventos y decisiones del modo paso a paso. |
+| [fase2/pruebas_fase2.md](documentacion/fase2/pruebas_fase2.md) | Fase II: pruebas automáticas y manuales con sus resultados. |
 
 **Referencias**
 
