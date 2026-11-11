@@ -14,6 +14,7 @@ from .algoritmos import ALGORITMOS, admite_expropiacion, comparar, simular
 from .bd import BaseDatos
 from .metricas import formato
 from .modelos import ErrorValidacion, Proceso, Resultado
+from .paso_a_paso import EJECUCION, LISTO, NUEVO, TERMINADO, Instante, trazar
 
 ROJO = "#9b1027"
 ROJO_OSCURO = "#7a0c1f"
@@ -40,6 +41,10 @@ class App(tk.Tk):
         self.id_escenario: int | None = None
         self.nombre_escenario: str | None = None
         self.resultados: list[Resultado] = []   # ultimo resultado o comparacion
+        self.instantes: list[Instante] = []      # traza del modo paso a paso
+        self.resultado_paso: Resultado | None = None
+        self.t_paso = 0
+        self.id_reproduccion: str | None = None
 
         self._estilos()
         self._construir()
@@ -154,8 +159,14 @@ class App(tk.Tk):
         self.chk_expropiativo.pack(anchor="w", pady=(6, 0))
         ttk.Label(marco, text="Aplica a SJF (SRTF) y Prioridad.", style="Blanco.TLabel",
                   foreground="#666").pack(anchor="w", pady=(0, 6))
-        ttk.Button(marco, text="Simular", style="Acento.TButton",
-                   command=self._simular).pack(fill="x")
+        fila_sim = ttk.Frame(marco, style="Blanco.TFrame")
+        fila_sim.pack(fill="x")
+        ttk.Button(fila_sim, text="Simular", style="Acento.TButton",
+                   command=self._simular).grid(row=0, column=0, sticky="ew", padx=(0, 3))
+        ttk.Button(fila_sim, text="Paso a paso", style="Acento.TButton",
+                   command=lambda: self._simular(paso_a_paso=True)).grid(row=0, column=1,
+                                                                          sticky="ew", padx=(3, 0))
+        fila_sim.columnconfigure((0, 1), weight=1)
         ttk.Button(marco, text="Comparar los 4 algoritmos",
                    command=self._comparar).pack(fill="x", pady=(6, 0))
         self._actualizar_opciones()
@@ -198,6 +209,8 @@ class App(tk.Tk):
         self._dibujar_vacio(self.fig_gantt, self.canvas_gantt, "Ejecute una simulación para "
                                                                "ver el diagrama de Gantt")
 
+        self._pestana_paso_a_paso()
+
         # Metricas
         tab_met = ttk.Frame(self.pestanas, style="Blanco.TFrame", padding=8)
         self.pestanas.add(tab_met, text="Métricas")
@@ -220,7 +233,7 @@ class App(tk.Tk):
                        "Respuesta = primer uso de CPU - llegada").pack(anchor="w", pady=(6, 0))
 
         # Comparacion
-        tab_comp = ttk.Frame(self.pestanas, style="Blanco.TFrame", padding=8)
+        tab_comp = self.tab_comp = ttk.Frame(self.pestanas, style="Blanco.TFrame", padding=8)
         self.pestanas.add(tab_comp, text="Comparación")
         cols = ("algoritmo", "espera", "retorno", "respuesta", "cambios")
         self.tabla_comp = ttk.Treeview(tab_comp, columns=cols, show="headings", height=5)
@@ -254,6 +267,215 @@ class App(tk.Tk):
         ttk.Button(botones, text="Abrir escenario de la simulación seleccionada",
                    command=self._abrir_desde_historial).pack(side="left")
         ttk.Button(botones, text="Actualizar", command=self._refrescar_historial).pack(side="right")
+
+    # ------------------------------------------------------------ paso a paso
+    def _pestana_paso_a_paso(self) -> None:
+        tab = self.tab_paso = ttk.Frame(self.pestanas, style="Blanco.TFrame", padding=8)
+        self.pestanas.add(tab, text="Paso a paso")
+
+        controles = ttk.Frame(tab, style="Blanco.TFrame")
+        controles.pack(fill="x")
+        for texto, cmd in (("|< Inicio", lambda: self._ir_a(0)),
+                           ("< Anterior", lambda: self._ir_a(self.t_paso - 1)),
+                           ("Siguiente >", lambda: self._ir_a(self.t_paso + 1)),
+                           ("Fin >|", lambda: self._ir_a(len(self.instantes) - 1))):
+            ttk.Button(controles, text=texto, command=cmd).pack(side="left", padx=(0, 4))
+        self.btn_reproducir = ttk.Button(controles, text="Reproducir", style="Acento.TButton",
+                                         command=self._alternar_reproduccion)
+        self.btn_reproducir.pack(side="left", padx=(8, 0))
+        ttk.Label(controles, text="Velocidad", style="Blanco.TLabel").pack(side="left",
+                                                                          padx=(16, 4))
+        self.var_velocidad = tk.IntVar(value=800)
+        ttk.Scale(controles, from_=1500, to=150, variable=self.var_velocidad,
+                  length=140).pack(side="left")
+        self.lbl_t = ttk.Label(controles, text="t = -", style="Blanco.TLabel",
+                               font=("Segoe UI", 16, "bold"), foreground=ROJO)
+        self.lbl_t.pack(side="right")
+        self.lbl_titulo_paso = ttk.Label(tab, text="Use 'Simular paso a paso' para empezar",
+                                         style="Blanco.TLabel", font=("Segoe UI", 11, "bold"),
+                                         foreground="#333")
+        self.lbl_titulo_paso.pack(anchor="w", pady=(6, 2))
+
+        self.lienzo_cola = tk.Canvas(tab, height=104, bg="white", highlightthickness=1,
+                                     highlightbackground="#d9dde5")
+        self.lienzo_cola.pack(fill="x", pady=(2, 6))
+        self.lienzo_cola.bind("<Configure>", lambda _e: self._dibujar_cola())
+
+        self.fig_paso = Figure(figsize=(8, 1.7), dpi=100)
+        self.canvas_paso = FigureCanvasTkAgg(self.fig_paso, master=tab)
+        self.canvas_paso.get_tk_widget().pack(fill="x")
+        self._dibujar_vacio(self.fig_paso, self.canvas_paso,
+                            "El diagrama de Gantt se construirá unidad por unidad")
+
+        abajo = ttk.Frame(tab, style="Blanco.TFrame")
+        abajo.pack(fill="both", expand=True, pady=(6, 0))
+        izq = ttk.Frame(abajo, style="Blanco.TFrame")
+        izq.pack(side="left", fill="both")
+        der = ttk.Frame(abajo, style="Blanco.TFrame")
+        der.pack(side="left", fill="both", expand=True, padx=(10, 0))
+
+        ttk.Label(izq, text="Estado de los procesos", style="Blanco.TLabel",
+                  font=("Segoe UI", 10, "bold"), foreground=ROJO).pack(anchor="w")
+        cols = ("pid", "llegada", "rafaga", "restante", "estado")
+        self.tabla_estados = ttk.Treeview(izq, columns=cols, show="headings", height=7)
+        for col, texto, ancho in zip(cols, ("Proceso", "Llegada", "Ráfaga", "Restante", "Estado"),
+                                     (70, 65, 65, 70, 110)):
+            self.tabla_estados.heading(col, text=texto)
+            self.tabla_estados.column(col, width=ancho, anchor="center")
+        for estado, color in ((EJECUCION, "#e3f3e8"), (LISTO, "#fff4d6"),
+                              (TERMINADO, "#eceef2"), (NUEVO, "white")):
+            self.tabla_estados.tag_configure(estado, background=color)
+        self.tabla_estados.pack(fill="both", expand=True)
+
+        ttk.Label(der, text="Bitácora de eventos del planificador", style="Blanco.TLabel",
+                  font=("Segoe UI", 10, "bold"), foreground=ROJO).pack(anchor="w")
+        self.tabla_bitacora = ttk.Treeview(der, columns=("t", "evento"), show="headings",
+                                           height=7)
+        self.tabla_bitacora.heading("t", text="t")
+        self.tabla_bitacora.heading("evento", text="Evento")
+        self.tabla_bitacora.column("t", width=45, anchor="center", stretch=False)
+        self.tabla_bitacora.column("evento", width=480, anchor="w")
+        self.tabla_bitacora.tag_configure("actual", background="#fbe9ec",
+                                          font=("Segoe UI", 10, "bold"))
+        self.tabla_bitacora.pack(fill="both", expand=True)
+
+        self.bind_all("<Right>", lambda e: self._tecla_paso(e, +1))
+        self.bind_all("<Left>", lambda e: self._tecla_paso(e, -1))
+
+    def _preparar_paso_a_paso(self, r: Resultado) -> None:
+        self._detener_reproduccion()
+        self.resultado_paso = r
+        self.procesos_paso = list(self.procesos)   # copia: la tabla puede editarse despues
+        self.instantes = trazar(self.procesos_paso, r)
+        self._ir_a(0)
+
+    def _tecla_paso(self, evento, delta: int) -> None:
+        if (not self.instantes or self.pestanas.select() != str(self.tab_paso)
+                or isinstance(evento.widget, (ttk.Entry, tk.Entry, ttk.Combobox))):
+            return
+        self._detener_reproduccion()
+        self._ir_a(self.t_paso + delta)
+
+    def _ir_a(self, t: int) -> None:
+        if not self.instantes:
+            return
+        self.t_paso = max(0, min(t, len(self.instantes) - 1))
+        self._mostrar_instante()
+
+    def _alternar_reproduccion(self) -> None:
+        if self.id_reproduccion is not None:
+            self._detener_reproduccion()
+            return
+        if not self.instantes:
+            return
+        if self.t_paso >= len(self.instantes) - 1:
+            self._ir_a(0)
+        self.btn_reproducir.config(text="Pausa")
+        self.id_reproduccion = self.after(self.var_velocidad.get(), self._avanzar_reproduccion)
+
+    def _avanzar_reproduccion(self) -> None:
+        self._ir_a(self.t_paso + 1)
+        if self.t_paso >= len(self.instantes) - 1:
+            self._detener_reproduccion()
+        else:
+            self.id_reproduccion = self.after(self.var_velocidad.get(),
+                                              self._avanzar_reproduccion)
+
+    def _detener_reproduccion(self) -> None:
+        if self.id_reproduccion is not None:
+            self.after_cancel(self.id_reproduccion)
+            self.id_reproduccion = None
+        self.btn_reproducir.config(text="Reproducir")
+
+    def _mostrar_instante(self) -> None:
+        r, i = self.resultado_paso, self.instantes[self.t_paso]
+        total = len(self.instantes) - 1
+        self.lbl_t.config(text=f"t = {i.t} / {total}")
+        self.lbl_titulo_paso.config(
+            text=f"{r.nombre}  |  Unidad de tiempo [{i.t}, {i.t + 1})  |  "
+                 f"Cambios de contexto hasta ahora: {i.cambios_contexto}"
+            if i.t < total else f"{r.nombre}  |  Simulación terminada en t = {total}  |  "
+                                f"Cambios de contexto: {i.cambios_contexto}")
+        self._dibujar_cola()
+        self._dibujar_gantt_parcial()
+
+        self.tabla_estados.delete(*self.tabla_estados.get_children())
+        for p in self.procesos_paso:
+            estado = i.estados[p.pid]
+            self.tabla_estados.insert("", "end", tags=(estado,), values=(
+                p.pid, p.llegada, p.rafaga, i.restante[p.pid], estado))
+
+        self.tabla_bitacora.delete(*self.tabla_bitacora.get_children())
+        ultima = None
+        for anterior in self.instantes[:self.t_paso + 1]:
+            for evento in anterior.eventos:
+                etiqueta = ("actual",) if anterior.t == i.t else ()
+                ultima = self.tabla_bitacora.insert("", "end", tags=etiqueta,
+                                                    values=(anterior.t, evento))
+        if ultima:
+            self.tabla_bitacora.see(ultima)
+
+    def _dibujar_cola(self) -> None:
+        c = self.lienzo_cola
+        c.delete("all")
+        if not self.instantes:
+            c.create_text(16, 52, anchor="w", fill="#888", font=("Segoe UI", 10),
+                          text="Aquí se verá el proceso en CPU y la cola de listos en cada instante")
+            return
+        i = self.instantes[self.t_paso]
+        c.create_text(16, 16, anchor="w", text="CPU", fill=ROJO, font=("Segoe UI", 9, "bold"))
+        if i.en_cpu is None:
+            c.create_rectangle(16, 28, 136, 88, fill="#eeeeee", outline="#999", dash=(3, 2))
+            c.create_text(76, 58, text="Ociosa", fill="#555", font=("Segoe UI", 11))
+        else:
+            c.create_rectangle(16, 28, 136, 88, fill=self._color(i.en_cpu), outline="")
+            c.create_text(76, 50, text=i.en_cpu, fill="white", font=("Segoe UI", 16, "bold"))
+            c.create_text(76, 74, text=f"le faltan {i.restante[i.en_cpu]}", fill="white",
+                          font=("Segoe UI", 9))
+        c.create_line(150, 58, 190, 58, arrow="first", width=2, fill="#666")
+        c.create_text(200, 16, anchor="w", fill=ROJO, font=("Segoe UI", 9, "bold"),
+                      text="Cola de listos (el primero es el siguiente en obtener la CPU)")
+        if not i.cola:
+            c.create_text(200, 58, anchor="w", text="(vacía)", fill="#888", font=("Segoe UI", 11))
+        for n, pid in enumerate(i.cola):
+            x = 200 + n * 82
+            c.create_rectangle(x, 32, x + 72, 84, fill=self._color(pid), outline="")
+            c.create_text(x + 36, 50, text=pid, fill="white", font=("Segoe UI", 13, "bold"))
+            c.create_text(x + 36, 72, text=f"faltan {i.restante[pid]}", fill="white",
+                          font=("Segoe UI", 8))
+
+    def _dibujar_gantt_parcial(self) -> None:
+        r, t = self.resultado_paso, self.t_paso
+        fig = self.fig_paso
+        fig.clear()
+        ax = fig.add_subplot(111)
+        for s in r.gantt:
+            if s.inicio > t:
+                break
+            fin = min(s.fin, t + 1)
+            hecho = min(s.fin, t) - s.inicio    # unidades ya ejecutadas
+            color = "#eeeeee" if s.pid is None else self._color(s.pid)
+            if hecho > 0:
+                ax.broken_barh([(s.inicio, hecho)], (0, 1), facecolors=color,
+                               edgecolor="#999" if s.pid is None else "white",
+                               hatch="//" if s.pid is None else None, linewidth=1.5)
+            if fin > max(s.inicio, t):          # unidad en curso, resaltada
+                ax.broken_barh([(t, 1)], (0, 1), facecolors=color, alpha=0.5,
+                               edgecolor=ROJO, linewidth=2)
+            centro = s.inicio + (fin - s.inicio) / 2
+            ax.text(centro, 0.5, s.pid or "Ocioso", ha="center", va="center",
+                    color="white" if s.pid else "#555", fontsize=10 if s.pid else 8,
+                    fontweight="bold" if s.pid else "normal")
+        ax.axvline(t, color=ROJO, linewidth=2)
+        ax.set_xlim(0, max(r.tiempo_total, 1))
+        ax.set_ylim(0, 1)
+        ax.set_xticks(range(0, r.tiempo_total + 1))
+        ax.tick_params(axis="x", labelsize=8)
+        ax.set_yticks([])
+        for lado in ("top", "right", "left"):
+            ax.spines[lado].set_visible(False)
+        fig.subplots_adjust(left=0.03, right=0.98, top=0.95, bottom=0.3)
+        self.canvas_paso.draw()
 
     # --------------------------------------------------------------- procesos
     def _estado(self, texto: str) -> None:
@@ -348,7 +570,7 @@ class App(tk.Tk):
             self.lbl_escenario.config(text=f"Escenario: {nombre}")
         return self.id_escenario
 
-    def _simular(self) -> None:
+    def _simular(self, paso_a_paso: bool = False) -> None:
         try:
             alg = self.var_algoritmo.get()
             q = self._quantum() if alg == "Round Robin" else None
@@ -361,7 +583,13 @@ class App(tk.Tk):
         self.resultados = [r]
         self._mostrar_gantt(r)
         self._mostrar_metricas(r)
+        self._preparar_paso_a_paso(r)
         self._refrescar_historial()
+        if paso_a_paso:
+            self.pestanas.select(self.tab_paso)
+            self._estado(f"{r.nombre} paso a paso: use Siguiente o Reproducir para avanzar "
+                         f"(flechas izquierda/derecha del teclado).")
+            return
         self.pestanas.select(0)
         self._estado(f"{r.nombre}: espera promedio {formato(r.espera_promedio)}, retorno "
                      f"promedio {formato(r.retorno_promedio)}. Guardado en la BD.")
@@ -380,8 +608,9 @@ class App(tk.Tk):
         actual = next(r for r in resultados if r.algoritmo == self.var_algoritmo.get())
         self._mostrar_gantt(actual)
         self._mostrar_metricas(actual)
+        self._preparar_paso_a_paso(actual)
         self._refrescar_historial()
-        self.pestanas.select(2)
+        self.pestanas.select(self.tab_comp)
         mejor = min(resultados, key=lambda r: r.espera_promedio)
         self._estado(f"Comparación lista. Menor espera promedio: {mejor.nombre} "
                      f"({formato(mejor.espera_promedio)}).")
@@ -617,5 +846,6 @@ class App(tk.Tk):
             self._estado(f"Diagrama de Gantt exportado a {ruta}.")
 
     def _cerrar(self) -> None:
+        self._detener_reproduccion()
         self.bd.cerrar()
         self.destroy()
