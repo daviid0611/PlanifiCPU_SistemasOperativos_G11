@@ -6,3 +6,6 @@ venv/
 **/bd/*.db-journal
 .vscode/
 .idea/
+.venv-empaquetado/
+build/
+dist/

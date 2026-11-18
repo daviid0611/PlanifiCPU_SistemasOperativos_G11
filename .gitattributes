@@ -1,1 +1,2 @@
 documentacion/diagramas/*.html linguist-documentation
+*.bat text eol=crlf
