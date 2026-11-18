@@ -99,6 +99,40 @@ class Resultado:
     def tiempo_total(self) -> int:
         return self.gantt[-1].fin if self.gantt else 0
 
+    @property
+    def tiempo_ocupado(self) -> int:
+        """Unidades de tiempo en que la CPU ejecuto algun proceso."""
+        return sum(s.duracion for s in self.gantt if s.pid is not None)
+
+    @property
+    def tiempo_ocioso(self) -> int:
+        return self.tiempo_total - self.tiempo_ocupado
+
+    @property
+    def utilizacion_cpu(self) -> float:
+        """Porcentaje del intervalo [0, tiempo total] con la CPU ocupada."""
+        if not self.tiempo_total:
+            return 0.0
+        return 100 * self.tiempo_ocupado / self.tiempo_total
+
+    @property
+    def rendimiento(self) -> float:
+        """Throughput: procesos terminados por unidad de tiempo."""
+        if not self.tiempo_total:
+            return 0.0
+        return len(self.procesos) / self.tiempo_total
+
+    @property
+    def espera_maxima(self) -> int:
+        """Mayor tiempo de espera de un proceso (sirve para detectar inanicion)."""
+        return max((p.espera for p in self.procesos), default=0)
+
+    @property
+    def proceso_mayor_espera(self) -> str | None:
+        if not self.procesos:
+            return None
+        return max(self.procesos, key=lambda p: p.espera).pid
+
 
 def validar_procesos(procesos: list[Proceso]) -> None:
     """Valida la lista de procesos. Lanza ErrorValidacion con un mensaje claro."""

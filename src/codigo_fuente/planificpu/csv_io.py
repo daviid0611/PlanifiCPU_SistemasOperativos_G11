@@ -67,11 +67,18 @@ def exportar_resultados(ruta: str | Path, resultados: list[Resultado]) -> None:
             w.writerow(["Promedio", "", "", "", "", "", formato(r.espera_promedio),
                         formato(r.retorno_promedio), formato(r.respuesta_promedio)])
             w.writerow(["Cambios de contexto", r.cambios_contexto])
+            w.writerow(["Tiempo total", r.tiempo_total])
+            w.writerow(["Tiempo ocioso", r.tiempo_ocioso])
+            w.writerow(["Utilizacion de CPU (%)", formato(r.utilizacion_cpu)])
+            w.writerow(["Rendimiento (procesos/u.t.)", formato(r.rendimiento)])
+            w.writerow(["Espera maxima", r.espera_maxima, r.proceso_mayor_espera])
             w.writerow(["Gantt"] + [f"{s.pid or 'Ocioso'} [{s.inicio}-{s.fin}]" for s in r.gantt])
             w.writerow([])
         if len(resultados) > 1:
             w.writerow(["Comparativo", "Espera promedio", "Retorno promedio",
-                        "Respuesta promedio", "Cambios de contexto"])
+                        "Respuesta promedio", "Espera maxima", "Cambios de contexto",
+                        "Utilizacion de CPU (%)", "Rendimiento (procesos/u.t.)"])
             for r in resultados:
                 w.writerow([r.nombre, formato(r.espera_promedio), formato(r.retorno_promedio),
-                            formato(r.respuesta_promedio), r.cambios_contexto])
+                            formato(r.respuesta_promedio), r.espera_maxima, r.cambios_contexto,
+                            formato(r.utilizacion_cpu), formato(r.rendimiento)])
