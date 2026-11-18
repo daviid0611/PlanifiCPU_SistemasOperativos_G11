@@ -4,12 +4,13 @@ from __future__ import annotations
 
 import tkinter as tk
 from datetime import datetime
+from pathlib import Path
 from tkinter import filedialog, messagebox, simpledialog, ttk
 
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 
-from . import csv_io
+from . import __version__, csv_io
 from .algoritmos import ALGORITMOS, admite_expropiacion, comparar, simular
 from .bd import BaseDatos
 from .metricas import formato
@@ -22,12 +23,18 @@ FONDO = "#f4f6fa"
 COLORES = ["#1f5fbf", "#1e8a4c", "#d99a00", "#b3122e", "#6b3fa0",
            "#0f8b8d", "#c4561d", "#4b5d73", "#c2387a", "#5b8c1a"]
 EJEMPLO = [Proceso("P1", 0, 5, 2), Proceso("P2", 1, 3, 1), Proceso("P3", 2, 4, 3)]
+ICONO = Path(__file__).with_name("icono.png")
 
 
 class App(tk.Tk):
     def __init__(self, ruta_bd=None):
         super().__init__()
-        self.title("PlanifiCPU - Simulador de planificación de procesos en la CPU")
+        self.title(f"PlanifiCPU {__version__} - Simulador de planificación de procesos en la CPU")
+        try:
+            self._icono = tk.PhotoImage(file=str(ICONO))
+            self.iconphoto(True, self._icono)
+        except tk.TclError:
+            pass
         self.geometry("1320x780")
         self.minsize(1150, 700)
         try:
@@ -76,12 +83,19 @@ class App(tk.Tk):
         cabecera = tk.Frame(self, bg=ROJO, height=58)
         cabecera.pack(fill="x")
         tk.Label(cabecera, text="PlanifiCPU", bg=ROJO, fg="white",
-                 font=("Segoe UI", 18, "bold")).pack(side="left", padx=(18, 10), pady=8)
+                 font=("Segoe UI", 18, "bold")).pack(side="left", padx=(18, 4), pady=8)
+        tk.Label(cabecera, text=f"v{__version__}", bg=ROJO, fg="#f3d6dc",
+                 font=("Segoe UI", 9)).pack(side="left", padx=(0, 12), pady=(14, 0))
         tk.Label(cabecera, text="Simulador de algoritmos de planificación de procesos en la CPU",
                  bg=ROJO, fg="#f3d6dc", font=("Segoe UI", 11)).pack(side="left")
         self.lbl_escenario = tk.Label(cabecera, text="Escenario: sin guardar", bg=ROJO,
                                       fg="white", font=("Segoe UI", 10))
         self.lbl_escenario.pack(side="right", padx=18)
+
+        # la barra de estado se empaca antes que el cuerpo para que nunca quede oculta
+        self.barra = tk.Label(self, text="Listo. Registre procesos o cargue un CSV.",
+                              anchor="w", bg="#e6e9ef", fg="#333", font=("Segoe UI", 9))
+        self.barra.pack(fill="x", side="bottom")
 
         cuerpo = ttk.Frame(self)
         cuerpo.pack(fill="both", expand=True, padx=10, pady=10)
@@ -95,10 +109,6 @@ class App(tk.Tk):
         self._panel_algoritmo(izquierda)
         self._panel_procesos(izquierda)
         self._panel_resultados(derecha)
-
-        self.barra = tk.Label(self, text="Listo. Registre procesos o cargue un CSV.",
-                              anchor="w", bg="#e6e9ef", fg="#333", font=("Segoe UI", 9))
-        self.barra.pack(fill="x", side="bottom")
 
     def _panel_procesos(self, padre) -> None:
         marco = ttk.LabelFrame(padre, text="1. Registrar procesos", padding=8)
@@ -154,11 +164,9 @@ class App(tk.Tk):
         self.spin_quantum.grid(row=1, column=1, sticky="w", padx=(10, 0))
         self.var_expropiativo = tk.BooleanVar(value=False)
         self.chk_expropiativo = ttk.Checkbutton(
-            marco, text="Modo expropiativo", variable=self.var_expropiativo,
-            style="Blanco.TCheckbutton")
-        self.chk_expropiativo.pack(anchor="w", pady=(6, 0))
-        ttk.Label(marco, text="Aplica a SJF (SRTF) y Prioridad.", style="Blanco.TLabel",
-                  foreground="#666").pack(anchor="w", pady=(0, 6))
+            marco, text="Modo expropiativo (SJF → SRTF y Prioridad)",
+            variable=self.var_expropiativo, style="Blanco.TCheckbutton")
+        self.chk_expropiativo.pack(anchor="w", pady=(6, 6))
         fila_sim = ttk.Frame(marco, style="Blanco.TFrame")
         fila_sim.pack(fill="x")
         ttk.Button(fila_sim, text="Simular", style="Acento.TButton",
@@ -177,14 +185,14 @@ class App(tk.Tk):
         rejilla = ttk.Frame(marco, style="Blanco.TFrame")
         rejilla.pack(fill="x")
         acciones = (("Cargar CSV", self._cargar_csv), ("Guardar CSV", self._guardar_csv),
+                    ("Exportar resultados", self._exportar_resultados),
                     ("Guardar en BD", self._guardar_escenario),
                     ("Abrir de BD", self._abrir_escenario),
-                    ("Exportar resultados", self._exportar_resultados),
                     ("Exportar Gantt PNG", self._exportar_png))
-        for n, (texto, cmd) in enumerate(acciones):
-            ttk.Button(rejilla, text=texto, command=cmd).grid(row=n // 2, column=n % 2,
+        for n, (texto, cmd) in enumerate(acciones):   # 2 filas x 3 columnas
+            ttk.Button(rejilla, text=texto, command=cmd).grid(row=n // 3, column=n % 3,
                                                               sticky="ew", padx=2, pady=2)
-        rejilla.columnconfigure((0, 1), weight=1)
+        rejilla.columnconfigure((0, 1, 2), weight=1)
 
     def _panel_resultados(self, padre) -> None:
         self.pestanas = ttk.Notebook(padre)
@@ -228,22 +236,35 @@ class App(tk.Tk):
         self.tabla_met.tag_configure("promedio", background="#fbe9ec",
                                      font=("Segoe UI", 10, "bold"))
         self.tabla_met.pack(fill="both", expand=True)
+        self.lbl_resumen_met = ttk.Label(tab_met, text="", style="Blanco.TLabel",
+                                         font=("Segoe UI", 10, "bold"), foreground="#333")
+        self.lbl_resumen_met.pack(anchor="w", pady=(8, 0))
         ttk.Label(tab_met, style="Blanco.TLabel", foreground="#555", justify="left",
                   text="Espera = retorno - ráfaga  |  Retorno = fin - llegada  |  "
-                       "Respuesta = primer uso de CPU - llegada").pack(anchor="w", pady=(6, 0))
+                       "Respuesta = primer uso de CPU - llegada\n"
+                       "Utilización de CPU = tiempo con CPU ocupada / tiempo total  |  "
+                       "Rendimiento = procesos terminados / tiempo total").pack(anchor="w",
+                                                                                  pady=(4, 0))
 
         # Comparacion
         tab_comp = self.tab_comp = ttk.Frame(self.pestanas, style="Blanco.TFrame", padding=8)
         self.pestanas.add(tab_comp, text="Comparación")
-        cols = ("algoritmo", "espera", "retorno", "respuesta", "cambios")
+        cols = ("algoritmo", "espera", "retorno", "respuesta", "espera_max", "cambios",
+                "utilizacion")
         self.tabla_comp = ttk.Treeview(tab_comp, columns=cols, show="headings", height=5)
         for col, texto, ancho in zip(cols, ("Algoritmo", "Espera promedio", "Retorno promedio",
-                                            "Respuesta promedio", "Cambios de contexto"),
-                                     (220, 130, 130, 140, 140)):
+                                            "Respuesta promedio", "Espera máxima",
+                                            "Cambios de contexto", "Utilización CPU"),
+                                     (170, 100, 100, 110, 95, 110, 95)):
             self.tabla_comp.heading(col, text=texto)
-            self.tabla_comp.column(col, width=ancho, anchor="center")
+            self.tabla_comp.column(col, width=ancho, minwidth=60, anchor="center")
         self.tabla_comp.tag_configure("mejor", background="#e3f3e8")
         self.tabla_comp.pack(fill="x")
+        self.lbl_conclusion_comp = ttk.Label(tab_comp, text="", style="Blanco.TLabel",
+                                             foreground="#333", justify="left")
+        self.lbl_conclusion_comp.pack(anchor="w", fill="x", pady=(6, 0))
+        self.lbl_conclusion_comp.bind(  # el texto se parte en lineas si la ventana es angosta
+            "<Configure>", lambda e: e.widget.config(wraplength=max(e.width - 8, 200)))
         self.fig_comp = Figure(figsize=(8, 3.4), dpi=100)
         self.canvas_comp = FigureCanvasTkAgg(self.fig_comp, master=tab_comp)
         self.canvas_comp.get_tk_widget().pack(fill="both", expand=True, pady=(8, 0))
@@ -291,7 +312,7 @@ class App(tk.Tk):
         self.lbl_t = ttk.Label(controles, text="t = -", style="Blanco.TLabel",
                                font=("Segoe UI", 16, "bold"), foreground=ROJO)
         self.lbl_t.pack(side="right")
-        self.lbl_titulo_paso = ttk.Label(tab, text="Use 'Simular paso a paso' para empezar",
+        self.lbl_titulo_paso = ttk.Label(tab, text="Pulse el botón 'Paso a paso' para empezar",
                                          style="Blanco.TLabel", font=("Segoe UI", 11, "bold"),
                                          foreground="#333")
         self.lbl_titulo_paso.pack(anchor="w", pady=(6, 2))
@@ -692,6 +713,28 @@ class App(tk.Tk):
         self.tabla_met.insert("", "end", tags=("promedio",), values=(
             "Promedio", "", "", "", "", "", formato(r.espera_promedio),
             formato(r.retorno_promedio), formato(r.respuesta_promedio)))
+        self.lbl_resumen_met.config(text=(
+            f"Tiempo total: {r.tiempo_total} u.t.   |   CPU ociosa: {r.tiempo_ocioso} u.t.   |   "
+            f"Utilización de CPU: {formato(r.utilizacion_cpu)} %   |   "
+            f"Rendimiento: {formato(r.rendimiento)} procesos/u.t.   |   "
+            f"Espera máxima: {r.espera_maxima} ({r.proceso_mayor_espera})   |   "
+            f"Cambios de contexto: {r.cambios_contexto}"))
+
+    @staticmethod
+    def _conclusion(resultados: list[Resultado]) -> str:
+        """Texto con el mejor algoritmo en cada metrica (menor es mejor)."""
+        partes = []
+        for titulo, valor in (("Menor espera promedio", lambda r: r.espera_promedio),
+                              ("Menor respuesta promedio", lambda r: r.respuesta_promedio),
+                              ("Menor espera máxima", lambda r: r.espera_maxima),
+                              ("Menos cambios de contexto", lambda r: r.cambios_contexto)):
+            mejor = min(valor(r) for r in resultados)
+            nombres = [r.nombre for r in resultados if valor(r) == mejor]
+            nombres = ", ".join(nombres[:-1]) + " y " + nombres[-1] if len(nombres) > 1 \
+                else nombres[0]
+            texto = formato(mejor) if isinstance(mejor, float) else str(mejor)
+            partes.append(f"{titulo}: {nombres} ({texto})")
+        return "   |   ".join(partes[:2]) + "\n" + "   |   ".join(partes[2:])
 
     def _mostrar_comparacion(self, resultados: list[Resultado]) -> None:
         self.tabla_comp.delete(*self.tabla_comp.get_children())
@@ -700,7 +743,9 @@ class App(tk.Tk):
             etiqueta = ("mejor",) if r.espera_promedio == menor else ()
             self.tabla_comp.insert("", "end", tags=etiqueta, values=(
                 r.nombre, formato(r.espera_promedio), formato(r.retorno_promedio),
-                formato(r.respuesta_promedio), r.cambios_contexto))
+                formato(r.respuesta_promedio), r.espera_maxima, r.cambios_contexto,
+                formato(r.utilizacion_cpu) + " %"))
+        self.lbl_conclusion_comp.config(text=self._conclusion(resultados))
 
         fig = self.fig_comp
         fig.clear()
