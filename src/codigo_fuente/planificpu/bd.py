@@ -1,20 +1,42 @@
-"""Acceso a la base de datos SQLite (escenarios e historial de simulaciones)."""
+"""Acceso a la base de datos SQLite (escenarios e historial de simulaciones).
+
+Ubicacion del archivo planificpu.db:
+- Ejecutando el codigo fuente: src/codigo_fuente/bd/planificpu.db
+- Ejecutando el .exe (PyInstaller): %APPDATA%\\PlanifiCPU\\planificpu.db, porque la
+  carpeta temporal donde se descomprime el ejecutable se borra al cerrarlo.
+- La variable de entorno PLANIFICPU_BD permite indicar otra ruta (pruebas, CI).
+"""
 
 from __future__ import annotations
 
+import os
 import sqlite3
+import sys
 from pathlib import Path
 
 from .modelos import Proceso, Resultado
 
-RAIZ = Path(__file__).resolve().parent.parent
+EMPAQUETADO = getattr(sys, "frozen", False)
+RAIZ = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent.parent))
 RUTA_ESQUEMA = RAIZ / "bd" / "schema.sql"
 RUTA_BD = RAIZ / "bd" / "planificpu.db"
 
 
+def ruta_bd_por_defecto() -> Path:
+    """Ruta del archivo de base de datos segun la forma de ejecucion."""
+    if os.environ.get("PLANIFICPU_BD"):
+        return Path(os.environ["PLANIFICPU_BD"])
+    if EMPAQUETADO:
+        base = os.environ.get("APPDATA") or str(Path.home() / ".config")
+        return Path(base) / "PlanifiCPU" / "planificpu.db"
+    return RUTA_BD
+
+
 class BaseDatos:
     def __init__(self, ruta: str | Path | None = None):
-        self.ruta = str(ruta or RUTA_BD)
+        ruta = Path(ruta) if ruta else ruta_bd_por_defecto()
+        ruta.parent.mkdir(parents=True, exist_ok=True)
+        self.ruta = str(ruta)
         self.con = sqlite3.connect(self.ruta)
         self.con.row_factory = sqlite3.Row
         self.con.execute("PRAGMA foreign_keys = ON")
