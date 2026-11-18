@@ -1,0 +1,57 @@
+# Construye PlanifiCPU.exe en Windows con PyInstaller.
+# - Manual: pestana Actions > "Ejecutable de Windows" > Run workflow (queda como artefacto).
+# - Al subir una etiqueta v* (por ejemplo v2.0.0) se publica en Releases.
+name: Ejecutable de Windows
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  exe:
+    runs-on: windows-latest
+    timeout-minutes: 25
+    env:
+      PYTHONUTF8: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar dependencias y PyInstaller
+        run: python -m pip install -r requirements.txt pyinstaller
+
+      - name: Pruebas automaticas
+        run: python -m unittest discover -s pruebas
+
+      - name: Construir PlanifiCPU.exe
+        run: pyinstaller --noconfirm --clean empaquetado/PlanifiCPU.spec
+
+      - name: Verificar el ejecutable (diagnostico)
+        shell: pwsh
+        run: |
+          $p = Start-Process -FilePath dist\PlanifiCPU.exe -ArgumentList '--diagnostico' -Wait -PassThru
+          if ($p.ExitCode -ne 0) { throw "El diagnostico del ejecutable fallo (codigo $($p.ExitCode))" }
+          Get-Item dist\PlanifiCPU.exe | Select-Object Name, Length
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PlanifiCPU-windows
+          path: dist/PlanifiCPU.exe
+
+      - name: Publicar en Releases
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/PlanifiCPU.exe
+          body: |
+            PlanifiCPU ${{ github.ref_name }}: simulador de algoritmos de planificación de procesos en la CPU.
+            Descargue PlanifiCPU.exe y ábralo con doble clic en Windows 10/11 (no necesita Python).
+            La base de datos se guarda en %APPDATA%\PlanifiCPU\planificpu.db.
+            Grupo G11 - Sistemas Operativos - Universidad Manuela Beltrán.

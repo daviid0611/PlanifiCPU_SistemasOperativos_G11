@@ -1,0 +1,48 @@
+# Corre las pruebas automaticas en Windows y Linux cada vez que se sube un cambio a main.
+name: Pruebas
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  pruebas:
+    name: ${{ matrix.os }} - Python ${{ matrix.python }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+        python: ["3.12", "3.13"]
+    env:
+      PYTHONUTF8: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Instalar dependencias
+        run: python -m pip install -r requirements.txt
+
+      - name: Diagnostico del entorno
+        run: python src/codigo_fuente/main.py --diagnostico
+
+      - name: Pruebas automaticas (Windows)
+        if: runner.os == 'Windows'
+        run: python -m unittest discover -s pruebas -v
+
+      - name: Pruebas automaticas (Linux, con pantalla virtual para la interfaz)
+        if: runner.os == 'Linux'
+        run: xvfb-run -a python -m unittest discover -s pruebas -v
+
+      - name: Pruebas de mutacion
+        if: matrix.python == '3.12'
+        run: python pruebas/mutaciones.py
+
+      - name: Modo consola
+        run: python src/codigo_fuente/main.py --consola recursos/datos_ejemplo/ejemplo_cinco_procesos.csv --comparar -q 3
