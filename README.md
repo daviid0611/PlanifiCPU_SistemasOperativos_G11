@@ -3,7 +3,15 @@
 **Simulador de algoritmos de planificación de procesos en la CPU**
 
 Universidad Manuela Beltrán · Sistemas Operativos · Grupo G11 · 2026<br>
-Fase II: avance funcional, pruebas y evidencias (ABP) · versión 1.1
+**Fase III: versión final** · versión 2.0.0
+
+[![Pruebas](https://github.com/daviid0611/PlanifiCPU_SistemasOperativos_G11/actions/workflows/pruebas.yml/badge.svg)](https://github.com/daviid0611/PlanifiCPU_SistemasOperativos_G11/actions/workflows/pruebas.yml)
+![Python 3.12+](https://img.shields.io/badge/Python-3.12%2B-3776AB)
+![Pruebas automáticas](https://img.shields.io/badge/pruebas-65%20OK-1e8a4c)
+![Mutaciones](https://img.shields.io/badge/mutaciones-10%2F10%20detectadas-1e8a4c)
+[![Licencia MIT](https://img.shields.io/badge/licencia-MIT-lightgrey)](LICENSE)
+
+> **Para revisar la entrega final** vaya a la [sección 14](#14-fase-iii-versión-final): reúne la solución, el entorno, las pruebas, los resultados y la documentación, con un enlace a cada evidencia.
 
 ![Modo paso a paso de PlanifiCPU con Round Robin](recursos/imagenes/08_paso_a_paso.gif)
 
@@ -29,7 +37,15 @@ Fase II: avance funcional, pruebas y evidencias (ABP) · versión 1.1
 11. [Integrantes del equipo](#11-integrantes-del-equipo)
 12. [Estado actual y próximos avances](#12-estado-actual-y-próximos-avances)
 13. [Fase II: avance realizado](#13-fase-ii-avance-realizado)
-14. [Documentación técnica y referencias](#14-documentación-técnica-y-referencias)
+14. [Fase III: versión final](#14-fase-iii-versión-final)
+    1. [Evidencias de la entrega](#141-evidencias-de-la-entrega)
+    2. [Solución final y componentes](#142-solución-final-y-componentes)
+    3. [Configuración del entorno](#143-configuración-del-entorno)
+    4. [Pruebas de funcionamiento](#144-pruebas-de-funcionamiento)
+    5. [Resultados obtenidos](#145-resultados-obtenidos)
+    6. [Cumplimiento de objetivos y requerimientos](#146-cumplimiento-de-objetivos-y-requerimientos)
+    7. [Conclusiones y trabajo futuro](#147-conclusiones-y-trabajo-futuro)
+15. [Documentación técnica y referencias](#15-documentación-técnica-y-referencias)
 
 ---
 
@@ -39,7 +55,9 @@ Fase II: avance funcional, pruebas y evidencias (ABP) · versión 1.1
 
 ## 2. Descripción general
 
-PlanifiCPU es una aplicación de escritorio desarrollada en Python que simula los algoritmos de planificación de CPU **FCFS, SJF (con y sin expropiación), Round Robin y por Prioridad (con y sin expropiación)**. A partir de una lista de procesos con su tiempo de llegada, ráfaga de CPU y prioridad, genera el **diagrama de Gantt** de la ejecución, permite recorrerla **paso a paso** viendo la CPU y la cola de listos en cada instante, registra cada **cambio de contexto**, calcula los tiempos de **espera, retorno y respuesta**, y **compara** el desempeño de los cuatro algoritmos con el mismo conjunto de procesos. Los escenarios y el historial de simulaciones se guardan en una base de datos SQLite local.
+PlanifiCPU es una aplicación de escritorio desarrollada en Python que simula los algoritmos de planificación de CPU **FCFS, SJF (con y sin expropiación), Round Robin y por Prioridad (con y sin expropiación)**. A partir de una lista de procesos con su tiempo de llegada, ráfaga de CPU y prioridad, genera el **diagrama de Gantt** de la ejecución, permite recorrerla **paso a paso** viendo la CPU y la cola de listos en cada instante, registra cada **cambio de contexto**, calcula los tiempos de **espera, retorno y respuesta**, la **utilización de CPU**, el **rendimiento** y la **espera máxima**, y **compara** el desempeño de los cuatro algoritmos con el mismo conjunto de procesos. Los escenarios y el historial de simulaciones se guardan en una base de datos SQLite local.
+
+La versión final también funciona **desde la terminal** (modo consola), trae un **diagnóstico del entorno**, se distribuye como **ejecutable de Windows** que no necesita Python y está validada con 65 pruebas automáticas, ejercicios publicados en tres libros del curso y pruebas de mutación.
 
 ## 3. Levantamiento de información
 
@@ -134,7 +152,8 @@ PlanifiCPU es una aplicación de escritorio desarrollada en Python que simula lo
 | Comparación de los 4 algoritmos | Operaciones de E/S ni gestión de memoria |
 | Carga y exportación en CSV; Gantt en PNG | Versión web o móvil |
 | Base de datos SQLite local para escenarios e historial | Usuarios, login o servidor de base de datos |
-| Código en GitHub, pruebas automáticas y manual de uso (este README) | |
+| Modo consola, diagnóstico del entorno y ejecutable `.exe` para Windows | |
+| Código en GitHub, pruebas automáticas, integración continua y manual de usuario | |
 
 ## 7. Funcionalidades principales
 
@@ -148,6 +167,10 @@ PlanifiCPU es una aplicación de escritorio desarrollada en Python que simula lo
 | 6 | Cargar y exportar | Escenarios en CSV, resultados en CSV y el Gantt en PNG. |
 | 7 | Historial | Escenarios y simulaciones guardados en SQLite, con opción de reabrirlos. |
 | 8 | Paso a paso (Fase II) | Recorre la simulación unidad por unidad: proceso en CPU, cola de listos, estados, ráfaga restante y bitácora de eventos. |
+| 9 | Métricas ampliadas (Fase III) | Utilización de CPU, rendimiento, tiempo ocioso y espera máxima; conclusión de cuál algoritmo gana en cada métrica. |
+| 10 | Modo consola (Fase III) | `--consola`: Gantt en texto, métricas, comparación, traza paso a paso y exportación, sin abrir la ventana. |
+| 11 | Diagnóstico (Fase III) | `--diagnostico`: revisa Python, Tkinter, Matplotlib, SQLite y el motor, y dice si el equipo está listo. |
+| 12 | Ejecutable (Fase III) | `PlanifiCPU.exe` para Windows, generado con PyInstaller; guarda la BD en `%APPDATA%\PlanifiCPU`. |
 
 ### Relación con los conceptos de Sistemas Operativos
 
@@ -159,7 +182,8 @@ PlanifiCPU es una aplicación de escritorio desarrollada en Python que simula lo
 | Expropiación | Modo no expropiativo vs. expropiativo; quantum en Round Robin. |
 | Cambio de contexto | Se cuenta y se registra cada vez que la CPU pasa a otro proceso. |
 | Métricas de planificación | Tiempo de espera, retorno y respuesta; tiempos de CPU ociosa. |
-| Inanición | Se puede observar en Prioridad y SJF cuando llegan de forma continua procesos más prioritarios o más cortos. |
+| Inanición | Se observa en Prioridad y SJF cuando llegan de forma continua procesos más prioritarios o más cortos; la **espera máxima** la deja ver (experimento E5). |
+| Utilización y rendimiento | Porcentaje del tiempo con la CPU ocupada y procesos terminados por unidad de tiempo. |
 
 ![Relación con los conceptos de Sistemas Operativos](documentacion/diagramas/05_relacion_conceptos_so.png)
 
@@ -173,8 +197,12 @@ PlanifiCPU es una aplicación de escritorio desarrollada en Python que simula lo
 | Gestor de procesos | `modelos.py`, `csv_io.py` | Crea y valida los procesos; carga escenarios desde CSV. |
 | Motor de planificación | `algoritmos.py` | Un algoritmo por función con una interfaz común: `simular(procesos, algoritmo, quantum, expropiativo)`. |
 | Traza paso a paso (Fase II) | `paso_a_paso.py` | Expande el Gantt en instantes con CPU, cola de listos, estados y eventos: `trazar(procesos, resultado)`. |
-| Métricas y reportes | `metricas.py`, `csv_io.py` | Cálculo de tiempos, comparación y exportación a CSV/PNG. |
-| Persistencia | `bd.py`, `bd/schema.sql` | Guarda escenarios, simulaciones, resultados y tramos del Gantt en SQLite. |
+| Métricas y reportes | `metricas.py`, `modelos.py`, `csv_io.py` | Tiempos por proceso, utilización, rendimiento, espera máxima, comparación y exportación a CSV/PNG. |
+| Persistencia | `bd.py`, `bd/schema.sql` | Guarda escenarios, simulaciones, resultados y tramos del Gantt en SQLite (en `%APPDATA%` cuando corre como .exe). |
+| Modo consola (Fase III) | `consola.py` | Gantt en texto, métricas, comparación y traza paso a paso en la terminal. |
+| Diagnóstico (Fase III) | `diagnostico.py` | Verifica el entorno y corre una autoprueba; devuelve 0 o 1. |
+| Punto de entrada | `main.py` | Abre la interfaz o, con opciones, el modo consola o el diagnóstico. |
+| Análisis de resultados (Fase III) | `analisis_resultados.py` | Seis experimentos con el motor; genera CSV y gráficas. |
 
 ![Diagrama de estructura del producto](documentacion/diagramas/01_estructura_producto.png)
 
@@ -197,6 +225,13 @@ flowchart LR
     G --> B[Acceso a datos<br/>bd.py]
     C --> F[(CSV / PNG)]
     B --> D[(SQLite<br/>planificpu.db)]
+    T([Terminal]) --> K[Modo consola<br/>consola.py]
+    K --> M
+    K --> P
+    K --> C
+    T --> X[Diagnóstico<br/>diagnostico.py]
+    X --> M
+    X --> B
 ```
 
 ### 8.3 Organización de archivos y directorios
@@ -204,59 +239,70 @@ flowchart LR
 ```text
 PlanifiCPU_SistemasOperativos_G11/
 ├── README.md                       # presentación del proyecto (este archivo)
+├── CHANGELOG.md                    # cambios de cada versión (1.0, 1.1, 2.0)
 ├── LICENSE                         # licencia MIT
 ├── requirements.txt                # dependencias (matplotlib)
+├── .github/workflows/              # pruebas en Windows/Linux y construcción del .exe
 ├── documentacion/
 │   ├── descripcion_proyecto.pdf    # descripción y formulación del proyecto
 │   ├── requerimientos.pdf          # requerimientos funcionales y no funcionales
 │   ├── arquitectura_inicial.pdf    # componentes, arquitectura, archivos y BD
 │   ├── tecnologias_y_referencias.pdf
 │   ├── diagramas/                  # diagramas en PNG y su fuente HTML
-│   └── fase2/                      # componente paso a paso, pruebas y su salida
+│   ├── fase2/                      # componente paso a paso, pruebas y su salida
+│   └── fase3/                      # manual, entorno, pruebas, resultados y evidencias
+├── empaquetado/                    # PyInstaller: PlanifiCPU.spec, icono y script .bat
 ├── src/
 │   └── codigo_fuente/
-│       ├── main.py                 # punto de entrada
-│       ├── planificpu/             # gui, algoritmos, paso_a_paso, metricas, modelos, csv_io, bd
+│       ├── main.py                 # punto de entrada (interfaz, --consola, --diagnostico)
+│       ├── analisis_resultados.py  # experimentos de la Fase III
+│       ├── planificpu/             # gui, algoritmos, paso_a_paso, metricas, modelos,
+│       │                           # csv_io, bd, consola, diagnostico
 │       └── bd/schema.sql           # esquema de la base de datos
 ├── recursos/
-│   ├── imagenes/                   # capturas de la interfaz
-│   └── datos_ejemplo/              # escenarios CSV de ejemplo
+│   ├── imagenes/                   # capturas (version_final/ = Fase III)
+│   └── datos_ejemplo/              # 7 escenarios CSV de ejemplo
 └── pruebas/
-    ├── test_algoritmos.py          # pruebas automáticas del motor (Fase I)
-    └── test_paso_a_paso.py         # pruebas del modo paso a paso (Fase II)
+    ├── test_algoritmos.py          # motor (Fase I)
+    ├── test_paso_a_paso.py         # modo paso a paso (Fase II)
+    ├── test_validacion_bibliografia.py  # Stallings y Tanenbaum (Fase III)
+    ├── test_propiedades.py         # reglas del planificador en cargas aleatorias (Fase III)
+    ├── test_version_final.py       # métricas, consola, diagnóstico, BD y rendimiento (Fase III)
+    ├── test_interfaz.py            # interfaz gráfica (Fase III)
+    └── mutaciones.py               # pruebas de mutación (Fase III)
 ```
 
 ### 8.4 Frontend
 
-Interfaz de escritorio con **Tkinter** (widgets `ttk`) y gráficas de **Matplotlib** incrustadas, con los colores institucionales. Se abre maximizada y tiene un panel izquierdo de trabajo y un panel derecho de resultados con cinco pestañas.
+Interfaz de escritorio con **Tkinter** (widgets `ttk`) y gráficas de **Matplotlib** incrustadas, con los colores institucionales. Se abre maximizada y tiene un panel izquierdo de trabajo y un panel derecho de resultados con cinco pestañas. Las capturas de esta sección son de la versión final (Fase III); el manual completo está en [manual_usuario.md](documentacion/fase3/manual_usuario.md).
 
 | Sección | Controles |
 |---|---|
 | 1. Registrar procesos | Campos PID, Llegada, Ráfaga y Prioridad; *Agregar / actualizar*; tabla de procesos (al seleccionar una fila se carga para editarla); *Eliminar*, *Limpiar todo*, *Cargar ejemplo*. |
 | 2. Elegir algoritmo | Lista con los 4 algoritmos, quantum (solo Round Robin), *Modo expropiativo* (solo SJF y Prioridad), *Simular*, *Paso a paso* y *Comparar los 4 algoritmos*. |
-| 3. Escenarios y reportes | *Cargar CSV*, *Guardar CSV*, *Guardar en BD*, *Abrir de BD*, *Exportar resultados* y *Exportar Gantt PNG*. |
+| 3. Escenarios y reportes | *Cargar CSV*, *Guardar CSV*, *Exportar resultados*, *Guardar en BD*, *Abrir de BD* y *Exportar Gantt PNG*. |
 
-**Diagrama de Gantt** con el registro de ejecución (quién toma la CPU, cambios de contexto, expropiaciones y fin de cada proceso). Ejemplo de la ficha técnica con FCFS:
+**Diagrama de Gantt** con el registro de ejecución (quién toma la CPU, cambios de contexto, expropiaciones y fin de cada proceso). Cinco procesos con Round Robin q=3:
 
-![Gantt FCFS](recursos/imagenes/01_gantt_fcfs.png)
+![Gantt Round Robin](recursos/imagenes/version_final/01_gantt.png)
 
 **Paso a paso** (Fase II): controles para avanzar, retroceder o reproducir; proceso en CPU y cola de listos; Gantt que se construye unidad por unidad; estado de cada proceso y bitácora de eventos. Round Robin q=3 en t=7:
 
-![Paso a paso con Round Robin](recursos/imagenes/06_paso_a_paso_round_robin.png)
+![Paso a paso con Round Robin](recursos/imagenes/version_final/02_paso_a_paso.png)
 
-**Métricas** por proceso con la fila de promedios (FCFS: espera promedio 3,33 y retorno promedio 7,33):
+**Métricas** por proceso con la fila de promedios y, en la versión final, la línea de resumen con tiempo total, CPU ociosa, utilización, rendimiento, espera máxima y cambios de contexto (FCFS, ficha técnica):
 
-![Métricas FCFS](recursos/imagenes/02_metricas_fcfs.png)
+![Métricas FCFS](recursos/imagenes/version_final/03_metricas.png)
 
-**Comparación** de los cuatro algoritmos con el mismo conjunto de procesos:
+**Comparación** de los cuatro algoritmos con el mismo conjunto de procesos, con las columnas *Espera máxima* y *Utilización CPU* y la conclusión por métrica:
 
-![Comparación de los 4 algoritmos](recursos/imagenes/04_comparacion.png)
+![Comparación de los 4 algoritmos](recursos/imagenes/version_final/04_comparacion.png)
 
 **Historial (BD)** de simulaciones guardadas:
 
-![Historial de simulaciones](recursos/imagenes/05_historial_bd.png)
+![Historial de simulaciones](recursos/imagenes/version_final/07_historial.png)
 
-> Las capturas son de la aplicación real, con los escenarios de `recursos/datos_ejemplo/`.
+> Las capturas son de la aplicación real con los escenarios de `recursos/datos_ejemplo/`. Las de la versión final se tomaron en Ubuntu 24.04; las de las Fases I y II (Windows 11) siguen en [`recursos/imagenes/`](recursos/imagenes).
 
 ### 8.5 Commits
 
@@ -283,7 +329,20 @@ El historial sigue **Conventional Commits** (`tipo(ámbito): descripción`) y re
 | 17 | [`6f3bd28`](https://github.com/daviid0611/PlanifiCPU_SistemasOperativos_G11/commit/6f3bd28) | feat(gui) | **Fase II.** Pestaña *Paso a paso* con controles, reproducción, Gantt parcial y bitácora. |
 | 18 | [`0add69c`](https://github.com/daviid0611/PlanifiCPU_SistemasOperativos_G11/commit/0add69c) | docs | **Fase II.** Capturas y animación del modo paso a paso. |
 | 19 | [`a8a8221`](https://github.com/daviid0611/PlanifiCPU_SistemasOperativos_G11/commit/a8a8221) | docs(fase2) | **Fase II.** Documentación del componente y reporte de pruebas. |
-| 20 | último commit | docs | **Fase II.** README actualizado con el avance, el entorno, las pruebas y las evidencias. |
+| 20 | [`5bc5f54`](https://github.com/daviid0611/PlanifiCPU_SistemasOperativos_G11/commit/5bc5f54) | docs | **Fase II.** README actualizado con el avance, el entorno, las pruebas y las evidencias. |
+| 21 | [`3e786e4`](https://github.com/daviid0611/PlanifiCPU_SistemasOperativos_G11/commit/3e786e4) | feat(metricas) | **Fase III.** Utilización de CPU, rendimiento, tiempo ocioso y espera máxima; exportación CSV ampliada. |
+| 22 | [`f53d534`](https://github.com/daviid0611/PlanifiCPU_SistemasOperativos_G11/commit/f53d534) | fix(bd) | **Fase III.** La BD del ejecutable se guarda en `%APPDATA%\PlanifiCPU`. |
+| 23 | [`8ab0534`](https://github.com/daviid0611/PlanifiCPU_SistemasOperativos_G11/commit/8ab0534) | feat(consola) | **Fase III.** Modo consola, diagnóstico del entorno y versión 2.0.0. |
+| 24 | [`b78d9eb`](https://github.com/daviid0611/PlanifiCPU_SistemasOperativos_G11/commit/b78d9eb) | feat(gui) | **Fase III.** Métricas nuevas en la interfaz, conclusión de la comparación, icono y ajustes para 1366 × 768. |
+| 25 | [`bed0d4b`](https://github.com/daviid0611/PlanifiCPU_SistemasOperativos_G11/commit/bed0d4b) | build | **Fase III.** Empaquetado como ejecutable de Windows con PyInstaller. |
+| 26 | [`66bc323`](https://github.com/daviid0611/PlanifiCPU_SistemasOperativos_G11/commit/66bc323) | feat(analisis) | **Fase III.** Experimentos de resultados y cinco escenarios de ejemplo nuevos. |
+| 27 | [`c97411e`](https://github.com/daviid0611/PlanifiCPU_SistemasOperativos_G11/commit/c97411e) | test | **Fase III.** 38 pruebas nuevas (bibliografía, propiedades, interfaz, versión final) y pruebas de mutación. |
+| 28 | [`431a5b9`](https://github.com/daviid0611/PlanifiCPU_SistemasOperativos_G11/commit/431a5b9) | ci | **Fase III.** GitHub Actions: pruebas en Windows y Linux y construcción del `.exe`. |
+| 29 | [`af2d3e8`](https://github.com/daviid0611/PlanifiCPU_SistemasOperativos_G11/commit/af2d3e8) | docs(fase3) | **Fase III.** Resultados obtenidos con tablas y gráficas. |
+| 30 | [`37a842b`](https://github.com/daviid0611/PlanifiCPU_SistemasOperativos_G11/commit/37a842b) | docs(fase3) | **Fase III.** Manual de usuario, configuración del entorno, reporte de pruebas y evidencias. |
+| 31 | [`bceb9c6`](https://github.com/daviid0611/PlanifiCPU_SistemasOperativos_G11/commit/bceb9c6) | docs | **Fase III.** Capturas de la versión final. |
+| 32 | [`c91381d`](https://github.com/daviid0611/PlanifiCPU_SistemasOperativos_G11/commit/c91381d) | docs | **Fase III.** Registro de cambios (`CHANGELOG.md`). |
+| 33 | último commit | docs | **Fase III.** README de la versión final. |
 
 Historial completo: [commits/main](https://github.com/daviid0611/PlanifiCPU_SistemasOperativos_G11/commits/main)
 
@@ -330,7 +389,10 @@ Historial completo: [commits/main](https://github.com/daviid0611/PlanifiCPU_Sist
 | **Tkinter / ttk** | Tk 8.6 (incluido) | Interfaz gráfica de escritorio. | Viene con Python y funciona en Windows 10/11 sin instalar nada más. |
 | **Matplotlib** | 3.8+ (probado en 3.11.2) | Diagrama de Gantt y gráfica comparativa. | Librería estándar de gráficas; exporta el Gantt a PNG. |
 | **SQLite** | 3 (probado en 3.50.4) | Base de datos local de escenarios e historial. | Un solo archivo, sin servidor ni usuarios. |
-| **csv y unittest** | Librería estándar | Archivos CSV y pruebas automáticas. | Sin dependencias externas. |
+| **csv, argparse y unittest** | Librería estándar | Archivos CSV, modo consola y pruebas automáticas. | Sin dependencias externas. |
+| **PyInstaller** | 6.x (probado en 6.22) | Ejecutable `PlanifiCPU.exe` de un solo archivo. | Empaqueta Python, Tkinter y Matplotlib para usar la app sin instalar nada. |
+| **GitHub Actions** | `windows-latest`, `ubuntu-latest` | Pruebas en cada `push` y construcción del `.exe` en cada versión. | Verifica que el proyecto funcione en Windows y Linux, no solo en un equipo. |
+| **Xvfb** | Ubuntu 24.04 | Pantalla virtual para probar la interfaz en Linux sin monitor. | Permite correr las pruebas de la interfaz en servidores. |
 | **Git y GitHub** | Git 2.54 | Control de versiones y repositorio público. | Centraliza el desarrollo y evidencia los avances. |
 | **Visual Studio Code** | Actual | Editor de código. | Ligero, con soporte para Python y Git. |
 | **HTML/CSS + Chrome** | Actual | Diagramas y documentos PDF. | Diagramas versionables como texto y exportables a PNG/PDF. |
@@ -348,11 +410,13 @@ Historial completo: [commits/main](https://github.com/daviid0611/PlanifiCPU_Sist
 
 | Software | Requisito |
 |---|---|
-| Sistema operativo | Windows 10 u 11 de 64 bits (entorno previsto) |
-| Intérprete | Python 3.12 o superior, con Tkinter y sqlite3 (incluidos en el instalador oficial) |
+| Sistema operativo | Windows 10 u 11 de 64 bits (entorno previsto); también Linux y macOS con Python |
+| Intérprete | Python 3.12 o superior, con Tkinter y sqlite3 (incluidos en el instalador oficial). No se necesita con el `.exe`. |
 | Librerías | Matplotlib 3.8 o superior |
 
-No requiere virtualización, servidor ni conexión a internet.
+No requiere virtualización, servidor ni conexión a internet. La guía paso a paso (Windows, Linux, ejecutable y problemas frecuentes) está en [configuracion_entorno.md](documentacion/fase3/configuracion_entorno.md).
+
+**Con el ejecutable (sin Python):** descargue `PlanifiCPU.exe` de [Releases](https://github.com/daviid0611/PlanifiCPU_SistemasOperativos_G11/releases) o genérelo con [`empaquetado/empaquetar_windows.bat`](empaquetado/empaquetar_windows.bat), y ábralo con doble clic.
 
 **Instalación y ejecución**
 
@@ -360,6 +424,7 @@ No requiere virtualización, servidor ni conexión a internet.
 git clone https://github.com/daviid0611/PlanifiCPU_SistemasOperativos_G11.git
 cd PlanifiCPU_SistemasOperativos_G11
 python -m pip install -r requirements.txt
+python src/codigo_fuente/main.py --diagnostico   # opcional: verifica el entorno
 python src/codigo_fuente/main.py
 ```
 
@@ -379,10 +444,19 @@ P2;1;3;1
 P3;2;4;3
 ```
 
-**Pruebas automáticas** (27 pruebas: 13 del motor con el ejemplo de la ficha técnica y ejercicios clásicos de Silberschatz, y 14 del modo paso a paso):
+**Modo consola** (sin abrir la ventana):
+
+```bash
+python src/codigo_fuente/main.py --consola recursos/datos_ejemplo/ejemplo_cinco_procesos.csv -a rr -q 3
+python src/codigo_fuente/main.py --consola recursos/datos_ejemplo/stallings.csv --comparar --exportar resultados.csv
+python src/codigo_fuente/main.py --consola -a srtf --traza
+```
+
+**Pruebas automáticas** (65 pruebas: motor, paso a paso, bibliografía, propiedades, versión final e interfaz) y **pruebas de mutación**:
 
 ```bash
 python -m unittest discover -s pruebas -v
+python pruebas/mutaciones.py
 ```
 
 ## 11. Integrantes del equipo
@@ -397,15 +471,19 @@ Grupo G11 · Sistemas Operativos · Facultad de Ingeniería · Universidad Manue
 
 ## 12. Estado actual y próximos avances
 
-**Estado actual: versión 1.1 (Fase II).** Están implementados los cuatro algoritmos (con y sin expropiación), el diagrama de Gantt con registro de ejecución, el **modo paso a paso**, las métricas, la comparación de algoritmos, la carga y exportación en CSV/PNG y la base de datos SQLite con historial. Pasan 27 pruebas automáticas.
+**Estado actual: versión 2.0.0, final (Fase III).** Están implementados los cuatro algoritmos (con y sin expropiación), el diagrama de Gantt con registro de ejecución, el modo paso a paso, las métricas (incluidas utilización, rendimiento y espera máxima), la comparación de algoritmos, la carga y exportación en CSV/PNG, la base de datos SQLite con historial, el modo consola, el diagnóstico del entorno y el ejecutable de Windows. Pasan 65 pruebas automáticas y se detectan 10 de 10 mutaciones.
 
-**Próximos avances**
+**Avances**
 
 - [x] Modo paso a paso: avanzar la simulación unidad por unidad mostrando la cola de listos en cada instante (Fase II).
 - [x] Pruebas con casos límite del modo paso a paso: misma llegada, CPU ociosa, quantum grande y 420 simulaciones aleatorias (Fase II).
-- [ ] Validar el simulador con los ejercicios propuestos por el docente en clase.
-- [ ] Manual de usuario con capturas en `documentacion/`.
-- [ ] Empaquetar la aplicación como ejecutable `.exe` para Windows (PyInstaller).
+- [x] Validar el simulador con ejercicios resueltos de la bibliografía del curso: Silberschatz, Stallings (tabla 9.5) y Tanenbaum (Fase III).
+- [x] Manual de usuario con capturas: [manual_usuario.md](documentacion/fase3/manual_usuario.md) (Fase III).
+- [x] Empaquetar la aplicación como ejecutable `.exe` para Windows con PyInstaller (Fase III).
+- [x] Métricas de utilización, rendimiento y espera máxima; modo consola y diagnóstico (Fase III).
+- [x] Pruebas de la interfaz, propiedades, mutación e integración continua en Windows y Linux (Fase III).
+
+El trabajo futuro está en la [sección 14.7](#147-conclusiones-y-trabajo-futuro).
 
 ## 13. Fase II: avance realizado
 
@@ -447,7 +525,154 @@ Grupo G11 · Sistemas Operativos · Facultad de Ingeniería · Universidad Manue
 
 **Commits de la Fase II**: filas 15 a 20 de la [sección 8.5](#85-commits).
 
-## 14. Documentación técnica y referencias
+## 14. Fase III: versión final
+
+**Objetivo de la fase.** Consolidar en una versión final (2.0.0) lo construido en las Fases I y II, cerrar los pendientes que dejó la Fase II y demostrar con pruebas y datos que el simulador cumple los objetivos del proyecto.
+
+### 14.1 Evidencias de la entrega
+
+| Lo que pide la guía | Dónde está |
+|---|---|
+| Solución final implementada | Versión 2.0.0 en `main`: [código fuente](src/codigo_fuente), [ejecutable de Windows](empaquetado) y [registro de cambios](CHANGELOG.md). |
+| Funcionamiento de los componentes | [Sección 14.2](#142-solución-final-y-componentes), [capturas de la versión final](recursos/imagenes/version_final) y [manual de usuario](documentacion/fase3/manual_usuario.md). |
+| Configuración del sistema operativo o entorno | [Sección 14.3](#143-configuración-del-entorno), [configuracion_entorno.md](documentacion/fase3/configuracion_entorno.md) y el comando `--diagnostico`. |
+| Pruebas de funcionamiento | [Sección 14.4](#144-pruebas-de-funcionamiento), [pruebas_fase3.md](documentacion/fase3/pruebas_fase3.md), [salida de las 65 pruebas](documentacion/fase3/salida_pruebas.txt) y [salida de las mutaciones](documentacion/fase3/salida_mutaciones.txt). |
+| Resultados obtenidos | [Sección 14.5](#145-resultados-obtenidos) y [resultados.md](documentacion/fase3/resultados.md) con sus [CSV y gráficas](documentacion/fase3/resultados). |
+| Documentación básica del proyecto | Este README, la [sección 15](#15-documentación-técnica-y-referencias), los PDF de la Fase I y los documentos de las fases II y III. |
+| Repositorio actualizado con la versión final | Rama `main` con la versión 2.0.0. |
+| Código fuente organizado | Capas separadas ([sección 8.1](#81-componentes-y-módulos)) y estructura de la guía ([sección 8.3](#83-organización-de-archivos-y-directorios)). |
+| Evidencias de funcionamiento | Capturas de la interfaz y de la terminal, salidas en [`documentacion/fase3/evidencias/`](documentacion/fase3/evidencias) y la pestaña [Actions](https://github.com/daviid0611/PlanifiCPU_SistemasOperativos_G11/actions) con cada ejecución de las pruebas. |
+| Registro de avances mediante commits | 33 commits con Conventional Commits; los de esta fase son las filas 21 a 33 de la [sección 8.5](#85-commits). |
+| Pruebas realizadas y resultados obtenidos | Secciones [14.4](#144-pruebas-de-funcionamiento) y [14.5](#145-resultados-obtenidos). |
+
+### 14.2 Solución final y componentes
+
+Cambios de la versión final sobre la Fase II (detalle en el [CHANGELOG](CHANGELOG.md)):
+
+| Componente | Qué se agregó o cambió | Evidencia |
+|---|---|---|
+| Métricas (`modelos.py`, `csv_io.py`) | Utilización de CPU, rendimiento, tiempo ocioso y espera máxima, también en la exportación CSV. | [Captura](recursos/imagenes/version_final/03_metricas.png) |
+| Interfaz (`gui.py`) | Resumen de métricas, columnas nuevas y conclusión en *Comparación*, versión e icono, y distribución que cabe en 1366 × 768. | [Captura](recursos/imagenes/version_final/05_comparacion_expropiativa.png) |
+| Modo consola (`consola.py`) | Gantt en texto, métricas, comparación, traza paso a paso y exportación. | [Captura](recursos/imagenes/version_final/08_modo_consola.png) |
+| Diagnóstico (`diagnostico.py`) | Revisión del entorno y autoprueba con código de salida. | [Captura](recursos/imagenes/version_final/10_diagnostico_y_pruebas.png) |
+| Persistencia (`bd.py`) | En el ejecutable, la BD va a `%APPDATA%\PlanifiCPU`; variable `PLANIFICPU_BD` para otra ruta. | `test_ejecutable_guarda_en_appdata` |
+| Empaquetado (`empaquetado/`) | `PlanifiCPU.spec`, icono y `empaquetar_windows.bat`. | [Guía](documentacion/fase3/configuracion_entorno.md#3-opción-a-ejecutable-de-windows-sin-instalar-python) |
+| Integración continua (`.github/workflows/`) | Pruebas en Windows y Ubuntu con Python 3.12 y 3.13; `.exe` en cada versión. | Insignia *Pruebas* al inicio |
+| Análisis (`analisis_resultados.py`) | Seis experimentos reproducibles. | [resultados.md](documentacion/fase3/resultados.md) |
+
+La espera máxima se agregó porque el promedio puede esconder la inanición. Con [`inanicion.csv`](recursos/datos_ejemplo/inanicion.csv) y Prioridad, la espera promedio es la menor de los cuatro algoritmos (1,57), pero el proceso BAJA espera 11 unidades:
+
+![Inanición revelada por la espera máxima](recursos/imagenes/version_final/06_inanicion_metricas.png)
+
+El modo consola da los mismos resultados que la interfaz, porque usa el mismo motor:
+
+![Comparación y traza en la terminal](recursos/imagenes/version_final/09_consola_comparacion_y_traza.png)
+
+### 14.3 Configuración del entorno
+
+| Entorno | Sistema operativo | Python | Qué se ejecutó |
+|---|---|---|---|
+| Desarrollo (Fases I y II) | Windows 11, 64 bits | 3.14.6 | Aplicación, 27 pruebas y capturas de esas fases |
+| Versión final (Fase III) | Ubuntu 24.04, x86_64, con Xvfb | 3.12.3 | Aplicación, 65 pruebas, mutaciones, análisis, ejecutable con PyInstaller y capturas de la versión final |
+| GitHub Actions | `windows-latest` y `ubuntu-latest` | 3.12 y 3.13 | Diagnóstico, pruebas, mutaciones y modo consola en cada `push`; `.exe` en cada etiqueta `v*` |
+
+Pasos resumidos en Windows (la guía completa, con Linux, el ejecutable y los problemas frecuentes, está en [configuracion_entorno.md](documentacion/fase3/configuracion_entorno.md)):
+
+1. Instalar Python 3.12+ marcando *Add python.exe to PATH* y *tcl/tk and IDLE*.
+2. `git clone`, crear el entorno virtual (`python -m venv .venv` y `.venv\Scripts\activate`) e instalar `requirements.txt`.
+3. Verificar con `python src/codigo_fuente/main.py --diagnostico`: todos los chequeos deben salir en OK.
+4. Ejecutar `python src/codigo_fuente/main.py`, o usar `PlanifiCPU.exe` sin instalar nada.
+
+![Diagnóstico del entorno, pruebas y mutaciones](recursos/imagenes/version_final/10_diagnostico_y_pruebas.png)
+
+### 14.4 Pruebas de funcionamiento
+
+| Tipo | Archivo | Pruebas | Resultado |
+|---|---|---|---|
+| Motor (Fase I) | `test_algoritmos.py` | 13 | 13 OK |
+| Paso a paso (Fase II) | `test_paso_a_paso.py` | 14 | 14 OK |
+| Validación con la bibliografía | `test_validacion_bibliografia.py` | 5 | 5 OK |
+| Propiedades del planificador | `test_propiedades.py` | 9 | 9 OK |
+| Funciones de la versión final | `test_version_final.py` | 17 | 17 OK |
+| Interfaz gráfica | `test_interfaz.py` | 7 | 7 OK |
+| **Total automáticas** | | **65** | **65 OK** |
+| Mutación | `mutaciones.py` | 10 errores introducidos | 10 detectados |
+| Manuales | [pruebas_fase3.md §7](documentacion/fase3/pruebas_fase3.md#7-pruebas-manuales) | 12 | 12 OK |
+
+- **Validación externa:** el motor reproduce exactamente los ejercicios publicados por Silberschatz (SJF 7,0; SRTF 6,5; RR q=4 17/3; Prioridad 8,2), Stallings (tabla 9.5: FCFS 8,60; RR q=1 10,80; RR q=4 10,00; SPN 7,60; SRT 7,20) y Tanenbaum (FCFS 14; SJF 11).
+- **Propiedades:** en miles de simulaciones aleatorias se comprueba que el Gantt no tiene huecos ni solapes, que cada proceso recibe su ráfaga completa, que la CPU nunca queda ociosa con procesos listos, que se respetan las reglas de desempate y que SRTF nunca es superado en espera promedio.
+- **Mutación:** se introducen 10 errores a propósito (empates, cola de Round Robin, quantum, prioridad invertida, métricas, validación) y las pruebas detectan los 10.
+- **Rendimiento (RNF05):** una prueba falla si 50 procesos tardan 1 segundo o más.
+
+```bash
+python -m unittest discover -s pruebas -v
+python pruebas/mutaciones.py
+```
+
+### 14.5 Resultados obtenidos
+
+El script [`analisis_resultados.py`](src/codigo_fuente/analisis_resultados.py) corre seis experimentos con el mismo motor (análisis completo en [resultados.md](documentacion/fase3/resultados.md)):
+
+| Experimento | Resultado principal |
+|---|---|
+| E1. Seis escenarios de ejemplo | SRTF tiene la menor espera promedio en los seis; Round Robin la mayor en tres, aunque con una de las mejores respuestas. |
+| E2. 500 cargas aleatorias | SRTF da la menor espera en el **100 %** de las cargas (7,97 promedio); Round Robin q=3 la menor respuesta en el 74,4 % (5,60), con más del doble de cambios de contexto (16,11 frente a 7). |
+| E3. Quantum de 1 a 12 | Con q=1 la respuesta es 1,88 pero hay 40 cambios de contexto; desde q=10 (la ráfaga máxima) Round Robin es igual a FCFS. |
+| E4. Efecto convoy | Con los mismos procesos, FCFS pasa de 2,80 a 17,00 de espera promedio si el proceso largo llega primero. |
+| E5. Inanición | Con Prioridad, SJF y SRTF la espera del proceso de baja prioridad crece sin límite (2k − 1); con FCFS y Round Robin se mantiene en 1. |
+| E6. Tiempo de ejecución | 50 procesos con traza paso a paso en 7,67 ms (límite del RNF05: 1 s); 1000 procesos en menos de 0,7 s con cualquier algoritmo. |
+
+![Promedio sobre 500 cargas aleatorias](documentacion/fase3/resultados/e2_cargas_aleatorias.png)
+
+![Round Robin según el quantum](documentacion/fase3/resultados/e3_sensibilidad_quantum.png)
+
+### 14.6 Cumplimiento de objetivos y requerimientos
+
+| Objetivo | Estado | Evidencia |
+|---|---|---|
+| **General:** simular FCFS, SJF, Round Robin y Prioridad, visualizar con Gantt cómo se asigna la CPU y comparar con métricas | Cumplido | Secciones 7, 8.4 y 14; 65 pruebas |
+| 1. Implementar los algoritmos con y sin expropiación | Cumplido | `algoritmos.py`; validación con tres libros y pruebas de propiedades |
+| 2. Generar el Gantt y el registro de cambios de contexto | Cumplido | Pestañas *Diagrama de Gantt* y *Paso a paso*; Gantt en texto en el modo consola |
+| 3. Calcular espera, retorno y respuesta por proceso y en promedio | Cumplido | Pestaña *Métricas*, más utilización, rendimiento y espera máxima |
+| 4. Comparar los cuatro algoritmos con tabla y gráfica | Cumplido | Pestaña *Comparación*, `--comparar` y experimentos E1–E5 |
+| 5. Guardar escenarios y resultados en CSV y SQLite | Cumplido | *Cargar/Guardar CSV*, *Exportar resultados*, *Historial (BD)* |
+
+| Requerimiento | Estado | Evidencia |
+|---|---|---|
+| RF01 Registrar, editar y eliminar procesos | Cumplido | `test_agregar_y_editar_proceso` |
+| RF02 Validar los datos | Cumplido | `test_validacion_de_datos`, `test_pid_repetido`, mutación M10 |
+| RF03 Elegir el algoritmo | Cumplido | `test_algoritmos.py`, `test_validacion_bibliografia.py` |
+| RF04 Modo expropiativo | Cumplido | `test_expropiativos_respetan_la_regla_de_seleccion` |
+| RF05 Gantt y cambios de contexto | Cumplido | `test_invariantes_en_escenarios_aleatorios`, `test_paso_a_paso.py` |
+| RF06 Métricas y promedios | Cumplido | `test_tiempos_de_fin_y_retorno`, `test_ficha_tecnica` |
+| RF07 Comparar los 4 algoritmos | Cumplido | `test_comparar_los_cuatro_algoritmos` |
+| RF08 CSV y PNG | Cumplido | `test_exportar_csv_y_png`, `test_csv_ida_y_vuelta` |
+| RF09 BD e historial | Cumplido | `test_guardar_y_abrir_escenario_de_la_bd`, `test_bd_guarda_escenario_y_simulacion` |
+| RNF01 Portabilidad | Cumplido | Ejecutable de Windows; pruebas en Windows y Linux con GitHub Actions |
+| RNF02 Usabilidad | Cumplido | Interfaz en español por pasos, coma decimal, manual de usuario |
+| RNF03 Exactitud | Cumplido | Tres libros, propiedades y 10/10 mutaciones |
+| RNF04 Mantenibilidad | Cumplido | Motor sin Tkinter; la consola y la interfaz usan el mismo motor |
+| RNF05 Rendimiento | Cumplido | 7,67 ms con 50 procesos; `test_50_procesos_en_menos_de_un_segundo` |
+| RNF06 Integridad de datos | Cumplido | Llaves foráneas, CHECK y cascada; `test_entorno_listo` revisa el esquema |
+| RNF07 Control de versiones | Cumplido | 33 commits con Conventional Commits y CI en cada `push` |
+
+### 14.7 Conclusiones y trabajo futuro
+
+**Conclusiones**
+
+1. PlanifiCPU cumple el objetivo general y los cinco específicos: simula los cuatro algoritmos con y sin expropiación, muestra el Gantt y la ejecución paso a paso, calcula las métricas y compara los algoritmos con el mismo conjunto de procesos.
+2. Los resultados coinciden con los ejercicios publicados en Silberschatz, Stallings y Tanenbaum, así que la herramienta sirve para comprobar los ejercicios que se resuelven a mano en el curso.
+3. Los experimentos confirman la teoría con datos: no hay un algoritmo mejor en todo. SRTF minimiza la espera, Round Robin la respuesta y los no expropiativos los cambios de contexto; FCFS sufre el efecto convoy y Prioridad sin envejecimiento produce inanición.
+4. Separar el motor de la interfaz permitió probarlo a fondo (65 pruebas, propiedades y mutación) y reutilizarlo en el modo consola y en el análisis de resultados sin duplicar código.
+
+**Trabajo futuro**
+
+- Algoritmos adicionales: HRRN, colas multinivel con retroalimentación (MLFQ) y prioridad con envejecimiento para corregir la inanición.
+- Ráfagas de E/S y estados bloqueados, y simulación con varios núcleos.
+- Costo configurable del cambio de contexto para ver su efecto en Round Robin.
+- Agregar como casos de prueba los ejercicios que proponga el docente en clase.
+
+## 15. Documentación técnica y referencias
 
 | Documento | Contenido |
 |---|---|
@@ -458,12 +683,19 @@ Grupo G11 · Sistemas Operativos · Facultad de Ingeniería · Universidad Manue
 | [diagramas/](documentacion/diagramas) | Diagramas en PNG con su fuente HTML. |
 | [fase2/componente_paso_a_paso.md](documentacion/fase2/componente_paso_a_paso.md) | Fase II: diseño, estructura de datos, eventos y decisiones del modo paso a paso. |
 | [fase2/pruebas_fase2.md](documentacion/fase2/pruebas_fase2.md) | Fase II: pruebas automáticas y manuales con sus resultados. |
+| [fase3/manual_usuario.md](documentacion/fase3/manual_usuario.md) | Fase III: manual de usuario de la interfaz, el modo consola y el ejercicio guiado. |
+| [fase3/configuracion_entorno.md](documentacion/fase3/configuracion_entorno.md) | Fase III: instalación en Windows y Linux, ejecutable, diagnóstico, configuración y problemas frecuentes. |
+| [fase3/pruebas_fase3.md](documentacion/fase3/pruebas_fase3.md) | Fase III: 65 pruebas automáticas, mutaciones, pruebas manuales y trazabilidad de requerimientos. |
+| [fase3/resultados.md](documentacion/fase3/resultados.md) | Fase III: seis experimentos con tablas, gráficas y conclusiones. |
+| [CHANGELOG.md](CHANGELOG.md) | Cambios de cada versión. |
 
 **Referencias**
 
 - Silberschatz, A., Galvin, P. B. y Gagne, G. (2018). *Operating system concepts* (10.ª ed.). Wiley.
 - Tanenbaum, A. S. y Bos, H. (2015). *Modern operating systems* (4.ª ed.). Pearson.
 - Stallings, W. (2018). *Operating systems: Internals and design principles* (9.ª ed.). Pearson.
+- PyInstaller Development Team. (2026). *PyInstaller manual*. https://pyinstaller.org/
+- GitHub. (2026). *GitHub Actions documentation*. https://docs.github.com/actions
 - Python Software Foundation. (2026). *tkinter* y *sqlite3*. https://docs.python.org/3/library/
 - Matplotlib Development Team. (2026). *Matplotlib: Visualization with Python*. https://matplotlib.org/
 - SQLite Consortium. (2026). *SQLite documentation*. https://www.sqlite.org/docs.html
