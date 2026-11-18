@@ -1,0 +1,8 @@
+pid,llegada,rafaga,prioridad
+CPU1,0,12,3
+CPU2,0,10,3
+I1,1,1,1
+I2,3,2,1
+I3,5,1,1
+I4,7,2,1
+I5,9,1,1
