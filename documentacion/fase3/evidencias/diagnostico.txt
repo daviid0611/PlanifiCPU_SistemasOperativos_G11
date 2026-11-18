@@ -1,0 +1,18 @@
+# Salida de: python src/codigo_fuente/main.py --diagnostico
+
+PlanifiCPU 2.0.0 - diagnóstico del entorno
+------------------------------------------------------------------------------
+[ OK  ] PlanifiCPU............. 2.0.0 (código fuente)
+[ OK  ] Sistema operativo...... Linux 6.18.44-fc-v595 (x86_64)
+[ OK  ] Python................. 3.12.3 (64bit)
+[ OK  ] Tkinter / Tk........... 8.6
+[ OK  ] Ventana gráfica........ se puede abrir
+[ OK  ] Matplotlib............. 3.11.2
+[ OK  ] SQLite................. 3.45.1
+[ OK  ] Archivo de la BD....... <repositorio>/src/codigo_fuente/bd/planificpu.db
+[ OK  ] Esquema de la BD....... 6 tablas creadas
+[ OK  ] Ejercicio de la ficha.. FCFS espera 3,33, retorno 7,33
+[ OK  ] Algoritmos............. 6 configuraciones simuladas
+[ OK  ] Paso a paso............ 13 instantes coherentes con el Gantt
+------------------------------------------------------------------------------
+Resultado: el entorno está listo para ejecutar PlanifiCPU.

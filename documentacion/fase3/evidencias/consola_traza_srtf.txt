@@ -1,0 +1,86 @@
+# Salida de: python src/codigo_fuente/main.py --consola recursos/datos_ejemplo/ejemplo_cinco_procesos.csv -a srtf --traza
+
+PlanifiCPU 2.0.0 - modo consola
+Escenario: recursos/datos_ejemplo/ejemplo_cinco_procesos.csv (5 procesos)
+
++---------+---------+--------+-----------+
+| Proceso | Llegada | Ráfaga | Prioridad |
++---------+---------+--------+-----------+
+| P1      |       0 |      8 |         3 |
+| P2      |       1 |      4 |         2 |
+| P3      |       2 |      9 |         1 |
+| P4      |       3 |      5 |         4 |
+| P5      |      12 |      2 |         2 |
++---------+---------+--------+-----------+
+
+Algoritmo: SJF expropiativo (SRTF)
+
+Diagrama de Gantt (-- = CPU ociosa)
++----+------------+---------------+------+------+---------------+---------------------------+
+| P1 |     P2     |       P4      |  P1  |  P5  |       P1      |             P3            |
++----+------------+---------------+------+------+---------------+---------------------------+
+0    1            5               10     12     14              19                          28
+
+Métricas por proceso
++----------+---------+--------+-----------+--------+-----+--------+---------+-----------+
+| Proceso  | Llegada | Ráfaga | Prioridad | Inicio | Fin | Espera | Retorno | Respuesta |
++----------+---------+--------+-----------+--------+-----+--------+---------+-----------+
+| P1       |       0 |      8 |         3 |      0 |  19 |     11 |      19 |         0 |
+| P2       |       1 |      4 |         2 |      1 |   5 |      0 |       4 |         0 |
+| P3       |       2 |      9 |         1 |     19 |  28 |     17 |      26 |        17 |
+| P4       |       3 |      5 |         4 |      5 |  10 |      2 |       7 |         2 |
+| P5       |      12 |      2 |         2 |     12 |  14 |      0 |       2 |         0 |
+| Promedio |         |        |           |        |     |   6,00 |   11,60 |      3,80 |
++----------+---------+--------+-----------+--------+-----+--------+---------+-----------+
+
+Tiempo total: 28 u.t.  |  CPU ociosa: 0 u.t.  |  Utilización de CPU: 100,00 %
+Rendimiento: 0,18 procesos/u.t.  |  Espera máxima: 17 (P3)  |  Cambios de contexto: 6
+
+Paso a paso - SJF expropiativo (SRTF)
+t=  0 | CPU: P1 (faltan 8)  | Cola: vacía
+        * P1 llega al sistema y entra a la cola de listos
+        * P1 toma la CPU
+t=  1 | CPU: P2 (faltan 4)  | Cola: P1
+        * P2 llega al sistema y entra a la cola de listos
+        * Cambio de contexto: P1 es expropiado (le faltan 7) y entra P2
+t=  2 | CPU: P2 (faltan 3)  | Cola: P1, P3
+        * P3 llega al sistema y entra a la cola de listos
+t=  3 | CPU: P2 (faltan 2)  | Cola: P4, P1, P3
+        * P4 llega al sistema y entra a la cola de listos
+t=  4 | CPU: P2 (faltan 1)  | Cola: P4, P1, P3
+t=  5 | CPU: P4 (faltan 5)  | Cola: P1, P3
+        * P2 termina su ráfaga y sale del sistema
+        * Cambio de contexto: P2 -> P4
+t=  6 | CPU: P4 (faltan 4)  | Cola: P1, P3
+t=  7 | CPU: P4 (faltan 3)  | Cola: P1, P3
+t=  8 | CPU: P4 (faltan 2)  | Cola: P1, P3
+t=  9 | CPU: P4 (faltan 1)  | Cola: P1, P3
+t= 10 | CPU: P1 (faltan 7)  | Cola: P3
+        * P4 termina su ráfaga y sale del sistema
+        * Cambio de contexto: P4 -> P1
+t= 11 | CPU: P1 (faltan 6)  | Cola: P3
+t= 12 | CPU: P5 (faltan 2)  | Cola: P1, P3
+        * P5 llega al sistema y entra a la cola de listos
+        * Cambio de contexto: P1 es expropiado (le faltan 5) y entra P5
+t= 13 | CPU: P5 (faltan 1)  | Cola: P1, P3
+t= 14 | CPU: P1 (faltan 5)  | Cola: P3
+        * P5 termina su ráfaga y sale del sistema
+        * Cambio de contexto: P5 -> P1
+t= 15 | CPU: P1 (faltan 4)  | Cola: P3
+t= 16 | CPU: P1 (faltan 3)  | Cola: P3
+t= 17 | CPU: P1 (faltan 2)  | Cola: P3
+t= 18 | CPU: P1 (faltan 1)  | Cola: P3
+t= 19 | CPU: P3 (faltan 9)  | Cola: vacía
+        * P1 termina su ráfaga y sale del sistema
+        * Cambio de contexto: P1 -> P3
+t= 20 | CPU: P3 (faltan 8)  | Cola: vacía
+t= 21 | CPU: P3 (faltan 7)  | Cola: vacía
+t= 22 | CPU: P3 (faltan 6)  | Cola: vacía
+t= 23 | CPU: P3 (faltan 5)  | Cola: vacía
+t= 24 | CPU: P3 (faltan 4)  | Cola: vacía
+t= 25 | CPU: P3 (faltan 3)  | Cola: vacía
+t= 26 | CPU: P3 (faltan 2)  | Cola: vacía
+t= 27 | CPU: P3 (faltan 1)  | Cola: vacía
+t= 28 | CPU: libre          | Cola: vacía
+        * P3 termina su ráfaga y sale del sistema
+        * Fin de la simulación: todos los procesos terminaron

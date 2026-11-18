@@ -1,0 +1,25 @@
+# Salida de: python pruebas/mutaciones.py
+# Entorno: Ubuntu 24.04 (x86_64), Python 3.12.3
+
+M01 DETECTADA   En modo expropiativo, ante un empate se cambia de proceso en vez de mantenerlo
+     1 prueba(s) fallaron, p. ej.: test_expropiativos_respetan_la_regla_de_seleccion
+M02 DETECTADA   En modo no expropiativo, el empate no se resuelve por orden de llegada
+     6 prueba(s) fallaron, p. ej.: test_fcfs, test_fcfs_atiende_por_orden_de_llegada, test_no_expropiativos_respetan_la_regla_de_seleccion
+M03 DETECTADA   Round Robin: el expropiado entra a la cola antes que los que llegaron
+     11 prueba(s) fallaron, p. ej.: test_comparar_y_exportar, test_entorno_listo, test_escenarios_aleatorios
+M04 DETECTADA   Round Robin: el quantum dura una unidad de mas
+     12 prueba(s) fallaron, p. ej.: test_comparar_y_exportar, test_entorno_listo, test_escenarios_aleatorios
+M05 DETECTADA   Prioridad invertida (numero mayor = mayor prioridad)
+     7 prueba(s) fallaron, p. ej.: test_entorno_listo, test_escenarios_aleatorios, test_expropiativa
+M06 DETECTADA   Respuesta calculada con el ultimo tramo y no con el primero
+     4 prueba(s) fallaron, p. ej.: test_comparar_y_exportar, test_exportacion_incluye_las_metricas_nuevas, test_expropiativa
+M07 DETECTADA   La CPU ociosa se cuenta como tiempo ocupado
+     3 prueba(s) fallaron, p. ej.: test_cpu_ociosa_al_inicio, test_cpu_ociosa_reduce_la_utilizacion, test_invariantes_en_escenarios_aleatorios
+M08 DETECTADA   El primer despacho se cuenta como cambio de contexto
+     8 prueba(s) fallaron, p. ej.: test_comparar_los_cuatro_algoritmos, test_cpu_ociosa, test_escenarios_aleatorios
+M09 DETECTADA   Paso a paso: el expropiado vuelve al frente de la cola de Round Robin
+     3 prueba(s) fallaron, p. ej.: test_escenarios_aleatorios, test_paso_a_paso_round_robin, test_round_robin_llegadas_antes_que_el_expropiado
+M10 DETECTADA   La validacion acepta rafaga 0 y valores negativos
+     1 prueba(s) fallaron, p. ej.: test_rafaga_cero
+
+Mutaciones detectadas: 10 de 10

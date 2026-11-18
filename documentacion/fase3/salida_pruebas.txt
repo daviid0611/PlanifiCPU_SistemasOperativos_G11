@@ -1,0 +1,77 @@
+# Salida de: python -m unittest discover -s pruebas -v
+# Entorno: Ubuntu 24.04 (x86_64), Python 3.12.3, Tk 8.6, Matplotlib 3.11.2, SQLite 3.45.1, pantalla virtual Xvfb
+
+test_cpu_ociosa (test_algoritmos.TestFCFS.test_cpu_ociosa) ... ok
+test_ejemplo_ficha_tecnica (test_algoritmos.TestFCFS.test_ejemplo_ficha_tecnica) ... ok
+test_expropiativa (test_algoritmos.TestPrioridad.test_expropiativa) ... ok
+test_no_expropiativa (test_algoritmos.TestPrioridad.test_no_expropiativa) ... ok
+test_llegadas_entran_antes_que_el_expropiado (test_algoritmos.TestRoundRobin.test_llegadas_entran_antes_que_el_expropiado) ... ok
+test_quantum_4 (test_algoritmos.TestRoundRobin.test_quantum_4) ... ok
+test_quantum_invalido (test_algoritmos.TestRoundRobin.test_quantum_invalido) ... ok
+test_expropiativo_srtf (test_algoritmos.TestSJF.test_expropiativo_srtf) ... ok
+test_no_expropiativo (test_algoritmos.TestSJF.test_no_expropiativo) ... ok
+test_bd_guarda_escenario_y_simulacion (test_algoritmos.TestValidacionYArchivos.test_bd_guarda_escenario_y_simulacion) ... ok
+test_csv_ida_y_vuelta (test_algoritmos.TestValidacionYArchivos.test_csv_ida_y_vuelta) ... ok
+test_pid_repetido (test_algoritmos.TestValidacionYArchivos.test_pid_repetido) ... ok
+test_rafaga_cero (test_algoritmos.TestValidacionYArchivos.test_rafaga_cero) ... ok
+test_agregar_y_editar_proceso (test_interfaz.TestInterfaz.test_agregar_y_editar_proceso) ... ok
+test_comparar_los_cuatro_algoritmos (test_interfaz.TestInterfaz.test_comparar_los_cuatro_algoritmos) ... ok
+test_exportar_csv_y_png (test_interfaz.TestInterfaz.test_exportar_csv_y_png) ... ok
+test_guardar_y_abrir_escenario_de_la_bd (test_interfaz.TestInterfaz.test_guardar_y_abrir_escenario_de_la_bd) ... ok
+test_paso_a_paso_round_robin (test_interfaz.TestInterfaz.test_paso_a_paso_round_robin) ... ok
+test_simular_ejemplo_de_la_ficha (test_interfaz.TestInterfaz.test_simular_ejemplo_de_la_ficha) ... ok
+test_validacion_de_datos (test_interfaz.TestInterfaz.test_validacion_de_datos) ... ok
+test_cpu_ociosa_y_proceso_nuevo (test_paso_a_paso.TestCasosLimite.test_cpu_ociosa_y_proceso_nuevo) ... ok
+test_quantum_mayor_que_todas_las_rafagas_equivale_a_fcfs (test_paso_a_paso.TestCasosLimite.test_quantum_mayor_que_todas_las_rafagas_equivale_a_fcfs) ... ok
+test_todos_llegan_al_mismo_tiempo (test_paso_a_paso.TestCasosLimite.test_todos_llegan_al_mismo_tiempo) ... ok
+test_escenarios_aleatorios (test_paso_a_paso.TestCoherenciaConElMotor.test_escenarios_aleatorios) ... ok
+test_cola_de_listos (test_paso_a_paso.TestEjemploFicha.test_cola_de_listos) ... ok
+test_estados_y_restante (test_paso_a_paso.TestEjemploFicha.test_estados_y_restante) ... ok
+test_eventos_en_t5 (test_paso_a_paso.TestEjemploFicha.test_eventos_en_t5) ... ok
+test_instante_final (test_paso_a_paso.TestEjemploFicha.test_instante_final) ... ok
+test_un_instante_por_unidad_mas_el_final (test_paso_a_paso.TestEjemploFicha.test_un_instante_por_unidad_mas_el_final) ... ok
+test_prioridad_ordena_por_numero_menor (test_paso_a_paso.TestOrdenDeLaCola.test_prioridad_ordena_por_numero_menor) ... ok
+test_round_robin_llegadas_antes_que_el_expropiado (test_paso_a_paso.TestOrdenDeLaCola.test_round_robin_llegadas_antes_que_el_expropiado) ... ok
+test_round_robin_quantum_agotado_con_cola_vacia (test_paso_a_paso.TestOrdenDeLaCola.test_round_robin_quantum_agotado_con_cola_vacia) ... ok
+test_sjf_ordena_por_rafaga (test_paso_a_paso.TestOrdenDeLaCola.test_sjf_ordena_por_rafaga) ... ok
+test_srtf_registra_la_expropiacion (test_paso_a_paso.TestOrdenDeLaCola.test_srtf_registra_la_expropiacion) ... ok
+test_expropiativos_respetan_la_regla_de_seleccion (test_propiedades.TestPropiedadesDelGantt.test_expropiativos_respetan_la_regla_de_seleccion)
+SRTF y Prioridad expropiativa: en cada unidad corre el de menor clave; ante un ... ok
+test_invariantes_en_escenarios_aleatorios (test_propiedades.TestPropiedadesDelGantt.test_invariantes_en_escenarios_aleatorios) ... ok
+test_no_expropiativos_ejecutan_cada_proceso_de_una_vez (test_propiedades.TestPropiedadesDelGantt.test_no_expropiativos_ejecutan_cada_proceso_de_una_vez) ... ok
+test_no_expropiativos_respetan_la_regla_de_seleccion (test_propiedades.TestPropiedadesDelGantt.test_no_expropiativos_respetan_la_regla_de_seleccion)
+Al liberarse la CPU se elige la menor clave; empates por llegada y registro. ... ok
+test_cpu_ociosa_reduce_la_utilizacion (test_propiedades.TestPropiedadesTeoricas.test_cpu_ociosa_reduce_la_utilizacion) ... ok
+test_fcfs_atiende_por_orden_de_llegada (test_propiedades.TestPropiedadesTeoricas.test_fcfs_atiende_por_orden_de_llegada) ... ok
+test_round_robin_con_quantum_grande_es_fcfs (test_propiedades.TestPropiedadesTeoricas.test_round_robin_con_quantum_grande_es_fcfs) ... ok
+test_sjf_es_optimo_cuando_todos_llegan_juntos (test_propiedades.TestPropiedadesTeoricas.test_sjf_es_optimo_cuando_todos_llegan_juntos)
+Ningun orden posible de los procesos da menor espera promedio que SJF. ... ok
+test_srtf_da_la_menor_espera_promedio (test_propiedades.TestPropiedadesTeoricas.test_srtf_da_la_menor_espera_promedio)
+SRTF es optimo para la espera promedio (Silberschatz, sec. 5.3.2). ... ok
+test_secuencia_round_robin_q1 (test_validacion_bibliografia.TestStallingsTabla95.test_secuencia_round_robin_q1) ... ok
+test_secuencia_srt (test_validacion_bibliografia.TestStallingsTabla95.test_secuencia_srt) ... ok
+test_tiempos_de_fin_y_retorno (test_validacion_bibliografia.TestStallingsTabla95.test_tiempos_de_fin_y_retorno) ... ok
+test_fcfs (test_validacion_bibliografia.TestTanenbaum.test_fcfs) ... ok
+test_sjf (test_validacion_bibliografia.TestTanenbaum.test_sjf) ... ok
+test_genera_tablas_y_graficas (test_version_final.TestAnalisisDeResultados.test_genera_tablas_y_graficas) ... ok
+test_entorno_listo (test_version_final.TestDiagnostico.test_entorno_listo) ... ok
+test_reporta_falla (test_version_final.TestDiagnostico.test_reporta_falla) ... ok
+test_cpu_ociosa_al_inicio (test_version_final.TestMetricasNuevas.test_cpu_ociosa_al_inicio) ... ok
+test_exportacion_incluye_las_metricas_nuevas (test_version_final.TestMetricasNuevas.test_exportacion_incluye_las_metricas_nuevas) ... ok
+test_ficha_tecnica (test_version_final.TestMetricasNuevas.test_ficha_tecnica) ... ok
+test_round_robin_reparte_la_espera (test_version_final.TestMetricasNuevas.test_round_robin_reparte_la_espera) ... ok
+test_comparar_y_exportar (test_version_final.TestModoConsola.test_comparar_y_exportar) ... ok
+test_cpu_ociosa_en_el_gantt_de_texto (test_version_final.TestModoConsola.test_cpu_ociosa_en_el_gantt_de_texto) ... ok
+test_errores_devuelven_codigo_2 (test_version_final.TestModoConsola.test_errores_devuelven_codigo_2) ... ok
+test_simulacion_con_gantt_en_texto (test_version_final.TestModoConsola.test_simulacion_con_gantt_en_texto) ... ok
+test_srtf_y_traza (test_version_final.TestModoConsola.test_srtf_y_traza) ... ok
+test_version (test_version_final.TestModoConsola.test_version) ... ok
+test_50_procesos_en_menos_de_un_segundo (test_version_final.TestRendimiento.test_50_procesos_en_menos_de_un_segundo) ... ok
+test_codigo_fuente_guarda_junto_al_esquema (test_version_final.TestUbicacionBaseDatos.test_codigo_fuente_guarda_junto_al_esquema) ... ok
+test_ejecutable_guarda_en_appdata (test_version_final.TestUbicacionBaseDatos.test_ejecutable_guarda_en_appdata) ... ok
+test_variable_de_entorno (test_version_final.TestUbicacionBaseDatos.test_variable_de_entorno) ... ok
+
+----------------------------------------------------------------------
+Ran 65 tests in 5.683s
+
+OK
