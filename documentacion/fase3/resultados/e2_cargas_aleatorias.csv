@@ -1,0 +1,7 @@
+﻿Algoritmo;Espera prom.;Retorno prom.;Respuesta prom.;Espera max.;Cambios ctx.;% cargas con menor espera;% cargas con menor respuesta
+FCFS;11,63;17,12;11,63;23,20;7,00;0,40;0,00
+SJF;8,46;13,95;8,46;24,96;7,00;30,00;2,80
+SRTF;7,97;13,46;7,29;25,15;8,02;100,00;22,00
+RR q=3;15,50;20,99;5,60;25,37;16,11;0,00;74,40
+Prioridad;11,64;17,13;11,64;29,03;7,00;0,60;0,00
+Prioridad exp.;12,36;17,85;10,00;30,10;8,41;0,20;5,20

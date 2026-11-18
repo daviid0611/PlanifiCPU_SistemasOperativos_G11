@@ -1,0 +1,13 @@
+﻿Variante;Algoritmo;Espera prom.;Espera prom. de los cortos;Espera max.
+El largo llega primero (t=0);FCFS;17,00;21,25;24
+El largo llega primero (t=0);SJF;16,60;20,75;23
+El largo llega primero (t=0);SRTF;3,00;1,75;8
+El largo llega primero (t=0);RR q=3;5,00;4,25;8
+El largo llega primero (t=0);Prioridad;17,00;21,25;24
+El largo llega primero (t=0);Prioridad exp.;3,40;2,25;8
+El largo llega al final (t=3);FCFS;2,80;2,25;5
+El largo llega al final (t=3);SJF;2,40;1,75;5
+El largo llega al final (t=3);SRTF;2,40;1,75;5
+El largo llega al final (t=3);RR q=3;2,80;2,25;5
+El largo llega al final (t=3);Prioridad;2,80;2,25;5
+El largo llega al final (t=3);Prioridad exp.;2,80;2,25;5
