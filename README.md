@@ -11,6 +11,43 @@ Universidad Manuela Beltrán · Sistemas Operativos · Grupo G11 · 2026<br>
 ![Mutaciones](https://img.shields.io/badge/mutaciones-10%2F10%20detectadas-1e8a4c)
 [![Licencia MIT](https://img.shields.io/badge/licencia-MIT-lightgrey)](LICENSE)
 
+## Resumen
+
+**Qué hace.** Aplicación de escritorio que simula los algoritmos de planificación de
+CPU FCFS, SJF, Round Robin y Prioridad (con y sin expropiación). Dibuja el diagrama
+de Gantt, calcula los tiempos de espera, retorno y respuesta, compara los cuatro
+algoritmos con los mismos procesos y permite recorrer la ejecución paso a paso.
+
+**Stack.** Python 3.12, Tkinter, Matplotlib y SQLite. Pruebas con `unittest`
+(65 pruebas y pruebas de mutación), CI con GitHub Actions en Windows y Linux, y
+empaquetado como `.exe` con PyInstaller.
+
+**Capturas:**
+
+| Diagrama de Gantt | Comparación de algoritmos |
+|---|---|
+| ![Diagrama de Gantt](recursos/imagenes/version_final/01_gantt.png) | ![Comparación de los cuatro algoritmos](recursos/imagenes/version_final/04_comparacion.png) |
+
+**Cómo ejecutarlo:**
+
+```bash
+git clone https://github.com/daviid0611/PlanifiCPU_SistemasOperativos_G11.git
+cd PlanifiCPU_SistemasOperativos_G11
+python -m pip install -r requirements.txt
+python src/codigo_fuente/main.py
+python -m unittest discover -s pruebas -v
+```
+
+Requisitos de hardware, modo consola y formato CSV en la [sección 10](#10-requisitos-iniciales-de-ejecución).
+
+**Mi rol.** Equipo G11 con Daniel Pérez y Axel Salgado. En las fases I y II
+desarrollé el motor de planificación y las métricas, la interfaz en Tkinter con el
+Gantt en Matplotlib, la base de datos SQLite, el modo paso a paso y sus pruebas.
+Daniel desarrolló la versión final (modo consola, ejecutable de Windows y CI) y
+Axel apoyó la documentación.
+
+---
+
 > **Para revisar la entrega final** vaya a la [sección 14](#14-fase-iii-versión-final): reúne la solución, el entorno, las pruebas, los resultados y la documentación, con un enlace a cada evidencia.
 
 ![Modo paso a paso de PlanifiCPU con Round Robin](recursos/imagenes/08_paso_a_paso.gif)
